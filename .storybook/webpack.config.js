@@ -54,6 +54,17 @@ module.exports = async ({ config, mode }) => {
   );
 
   config.module.rules.push({
+    test: /\.worker\.(js|ts)$/,
+    use: {
+      loader: 'worker-loader',
+      options: {
+        inline: mode === 'production',
+        fallback: false,
+      }
+    }
+  });
+
+  config.module.rules.push({
     test: /\.less$/,
     use: ['style-loader', 'css-loader', 'less-loader'],
     include: path.resolve(__dirname, '../'),

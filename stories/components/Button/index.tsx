@@ -1,14 +1,8 @@
 import * as React from 'react';
 
-export interface PageProps {
-  chart: any[];
-}
+export interface PageProps {}
 
-export interface PageState {
-  zoom: number;
-  rotation: number;
-  center: number[];
-}
+export interface PageState {}
 
 class Button extends React.Component<PageProps, PageState> {
   constructor(props: PageProps, context: any) {

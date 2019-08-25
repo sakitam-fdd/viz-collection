@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<script>
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  function getImage(data) {
+    const image = new Image();
+    image.onload = function () {
+      const { width, height } = image;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(image, 0, 0, width, height);
+
+      const imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+      const datas = imgData.data;
+      const u = [];
+      const v = [];
+      console.time('start');
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = (y * width + x) * 4;
+          const item = [datas[i + 0], datas[i + 1]]
+          const uItem = item[0] * (data.uMax - data.uMin) / 255 + data.uMin;
+          const vItem = item[1] * (data.vMax - data.vMin) / 255 + data.vMin;
+          // i + 2
+          // i + 3
+          // 上述得到的是第 k 个值
+          const k = y * width + (x + width / 2) % width;
+          u[k] = uItem;
+          v[k] = vItem;
+        }
+      }
+      console.timeEnd('start');
+
+      // console.time('start-t');
+      // for (let i = 0, ii = datas.length; i < ii; i += 4) {
+      //   const uItem = datas[i] * (data.uMax - data.uMin) / 255 + data.uMin;
+      //   const vItem = datas[i + 1] * (data.vMax - data.vMin) / 255 + data.vMin;
+      //   // i + 2
+      //   // i + 3
+      //   // 上述得到的是第 k 个值
+      //   // const k = y * width + (x + width / 2) % width;
+      //   u.push();
+      //   v.push();
+      // }
+      // console.timeEnd('start-t');
+      // ctx.putImageData(imgData, 0, 0);
+    };
+
+    image.onerror = function () {
+    };
+
+    image.src = '20190731040000.20190731040000.png';
+  }
+
+  fetch('./current-temp-surface-level-gfs-0.5.epak', {
+    method: 'GET'
+  }).then(function(response) {
+    return response.arrayBuffer();
+  }).then(function(json) {
+    console.log(json);
+    getImage(json);
+  }).catch(function (error) {
+    console.error(error)
+  });
+</script>
+</body>
+</html>
