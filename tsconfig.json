@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "*": [
+        "types/*",
+        "@types/*",
+        "typings/*"
+      ],
+      "maptalks": ["node_modules/maptalks/dist/maptalks.es.js"]
+    },
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "composite": false,
+    "allowJs": false,
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "outDir": "dist",
+    "declarationDir": "types",
+    "module": "ESNext",
+    "sourceMap": true,
+    "rootDirs": [
+      "src"
+    ],
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "strict": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es5",
+    "lib": [
+      "es5",
+      "es6",
+      "es2018",
+      "dom"
+    ]
+  },
+  "include": [
+    "src",
+    "test"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "*": [
+        "types/*",
+        "@types/*",
+        "typings/*"
+      ],
+      "@/*": [
+        "stories/*"
+      ],
+      "maptalks": ["node_modules/maptalks/dist/maptalks.es.js"]
+    },
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2018",
+    "module": "es2015",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "jsx": "react",
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": true,
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "skipLibCheck": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

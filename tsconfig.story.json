@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "*": [
+        "types/*",
+        "@types/*",
+        "typings/*"
+      ],
+      "@/*": [
+        "stories/*"
+      ],
+      "maptalks": ["node_modules/maptalks/dist/maptalks.es.js"]
+    },
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "allowJs": false,
+    "jsx": "react",
+    "skipLibCheck": true,
+    "declaration": true,
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "rootDirs": ["src", "stories"],
+    "types": [
+      "webpack-env"
+    ],
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
+  },
+  "include": [
+    "stories/**/*.ts",
+    "stories/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "./typings/**/*.ts"
+  ]
+}
