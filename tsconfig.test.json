@@ -34,7 +34,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "test/**/*.ts"
+    "test/**/*.ts",
+    "typings/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -34,14 +34,16 @@
       "esnext",
       "dom",
       "dom.iterable",
-      "scripthost"
+      "scripthost",
+      "webworker"
     ]
   },
   "include": [
     "stories/**/*.ts",
     "stories/**/*.tsx",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "typings/**/*.ts"
   ],
   "exclude": [
     "node_modules"

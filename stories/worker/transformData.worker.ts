@@ -13,6 +13,7 @@ ctx.addEventListener('message', async ({ data: payload }) => {
       .then((response) => {
         return response.arrayBuffer();
       });
+    console.log(arrayBuffer);
     const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer);
     const image = await tiff.getImage();
     const data = await image.readRasters(); // 273.15

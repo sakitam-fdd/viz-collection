@@ -43,6 +43,8 @@ module.exports = async ({ config, mode }) => {
       options: {
         inline: mode === 'production',
         fallback: false,
+        // publicPath: path.resolve(__dirname, '../public/workers'),
+        name: '[name].[hash].js'
       }
     }
   });
@@ -114,6 +116,10 @@ module.exports = async ({ config, mode }) => {
       },
     },
   };
+
+  // https://github.com/webpack-contrib/worker-loader/issues/166
+  // https://github.com/webpack/webpack/issues/6642
+  config.output.globalObject = 'this';
 
   return config;
 };

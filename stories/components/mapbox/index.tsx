@@ -5,7 +5,7 @@ import * as mapboxgl from 'mapbox-gl';
 import { values, colors } from '../../utils/common';
 // worker-loader!
 // @ts-ignore
-import TransformData from 'worker-loader!../../worker/transformData.worker';
+import TransformData from '../../worker/transformData.worker';
 
 export interface PageProps {}
 
