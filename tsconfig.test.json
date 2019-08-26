@@ -9,6 +9,7 @@
       "@/*": [
         "stories/*"
       ],
+      "ol/*": ["node_modules/ol/*"],
       "maptalks": ["node_modules/maptalks/dist/maptalks.es.js"]
     },
     "allowJs": false,

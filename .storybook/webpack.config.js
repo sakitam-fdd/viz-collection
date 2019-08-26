@@ -8,23 +8,6 @@ module.exports = async ({ config, mode }) => {
   // You can change the configuration based on that.
   // 'PRODUCTION' is used when building the static version of storybook.
 
-  // config.module.rules.push({
-  //   test: /\.vue$/,
-  //   loaders: [
-  //     {
-  //       loader: require.resolve('@storybook/addon-storysource/loader'),
-  //       options: {
-  //         // parser: 'typescript',
-  //         // prettierConfig: {
-  //         //   printWidth: 150,
-  //         //   singleQuote: true,
-  //         // },
-  //       },
-  //     }
-  //   ],
-  //   enforce: 'pre',
-  // });
-
   // Return the altered config
   // Typescript support
   config.module.rules.push(

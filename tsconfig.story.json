@@ -9,15 +9,16 @@
       "@/*": [
         "stories/*"
       ],
+      "ol/*": ["node_modules/ol/*"],
       "maptalks": ["node_modules/maptalks/dist/maptalks.es.js"]
     },
     "target": "esnext",
     "module": "esnext",
     "strict": true,
-    "allowJs": false,
+    "allowJs": true,
     "jsx": "react",
     "skipLibCheck": true,
-    "declaration": true,
+    "declaration": false,
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,

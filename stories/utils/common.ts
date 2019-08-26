@@ -1,7 +1,7 @@
 // @ts-ignore
-import * as proj4 from 'proj4';
+import proj4 from 'proj4';
 // @ts-ignore
-import * as GeoTIFF from 'geotiff';
+import * as GeoTIFF from 'geotiff/dist/geotiff.bundle.min.js';
 // @ts-ignore
 import { contours } from 'd3-contour';
 
@@ -46,7 +46,7 @@ const config = {
 };
 
 let values: any = [];
-const colors = [];
+const colors: string[] = [];
 // const extent = [70, 15, 140, 60];
 const mercatorExtent = [
   -20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244,
@@ -154,7 +154,7 @@ export function mathCoordinates(data: any, size: {
   return res;
 }
 
-export function getData(url: string = './20190813160000.20190813160000.tif') {
+export function getData(url: string = './201908252200.tif') {
   // tslint:disable-next-line:ter-arrow-parens
   return new Promise(resolve => {
     fetch(url, {
@@ -191,4 +191,4 @@ export function getData(url: string = './20190813160000.20190813160000.tif') {
 export {
   values,
   colors,
-}
+};
