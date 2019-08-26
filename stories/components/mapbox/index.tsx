@@ -2,7 +2,10 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import * as React from 'react';
 // @ts-ignore
 import * as mapboxgl from 'mapbox-gl';
-import { values, colors, getData } from '../../utils/common';
+import { values, colors } from '../../utils/common';
+// worker-loader!
+// @ts-ignore
+import TransformData from 'worker-loader!../../worker/transformData.worker';
 
 export interface PageProps {}
 
@@ -11,6 +14,10 @@ export interface PageState {}
 class Maptalks extends React.Component<PageProps, PageState> {
   private container: React.RefObject<HTMLElement>;
   private style: { width: string; height: string };
+
+  private worker: Worker | undefined;
+
+  private map: any;
   constructor(props: PageProps, context: any) {
     super(props, context);
 
@@ -33,30 +40,46 @@ class Maptalks extends React.Component<PageProps, PageState> {
     });
 
     map.on('load', () => {
-      const filters: (string | number)[] = [];
-      values.forEach((item: number, idx: number) => {
-        filters.push(item);
-        filters.push(colors[idx]);
+      this.initWorker();
+    });
+
+    this.map = map;
+  }
+
+  initWorker() {
+    this.worker = new TransformData();
+
+    if (this.worker) {
+      this.worker.addEventListener('message', this.onMessage);
+      this.worker.postMessage({
+        action: 'getData',
+        url: './data/201908252200.tif',
       });
-      getData('./data/201908252200.tif').then((res: any) => {
-        map.addLayer({
-          id: 'maine',
-          type: 'fill',
-          source: {
-            type: 'geojson',
-            data: res,
-          },
-          layout: {},
-          paint: {
-            'fill-color': [
-              'match',
-              ['get', 'value'],
-              ...filters,
-              'rgba(255, 255, 255, 0)',
-            ],
-          },
-        });
-      });
+    }
+  }
+
+  onMessage(data: any) {
+    const filters: (string | number)[] = [];
+    values.forEach((item: number, idx: number) => {
+      filters.push(item);
+      filters.push(colors[idx]);
+    });
+    this.map.addLayer({
+      id: 'maine',
+      type: 'fill',
+      source: {
+        data,
+        type: 'geojson',
+      },
+      layout: {},
+      paint: {
+        'fill-color': [
+          'match',
+          ['get', 'value'],
+          ...filters,
+          'rgba(255, 255, 255, 0)',
+        ],
+      },
     });
   }
 

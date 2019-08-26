@@ -24,6 +24,7 @@
 <body>
 <script src="https://unpkg.com/d3@5.11.0/dist/d3.js"></script>
 <script src="https://unpkg.com/geotiff@1.0.0-beta.6/dist/geotiff.bundle.js"></script>
+<script src="https://unpkg.com/fast-geotiff@1.0.0-beta.4/dist/index.js"></script>
 <script src="https://unpkg.com/plotty@0.4.0/dist/plotty.js"></script>
 <script src="https://unpkg.com/d3-contour@1.3.2/dist/d3-contour.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/proj4@2.5.0/dist/proj4-src.js"></script>
@@ -251,6 +252,11 @@
     map.addLayer(layer);
     console.log(layer.getGeometries());
   }
+
+  (async function () {
+    const imageData = await GeoTIFF.readRasterFromURL('./data/201908252200.tif');
+    console.log(imageData);
+  })();
 
   fetch('./data/201908252200.tif', {
   // fetch('./2019082320.tiff', {

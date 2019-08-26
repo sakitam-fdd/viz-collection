@@ -1685,6 +1685,11 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@types/zen-observable@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.npm.taobao.org/@types/zen-observable/download/@types/zen-observable-0.8.0.tgz#8b63ab7f1aa5321248aad5ac890a485656dcea4d"
+  integrity sha1-i2OrfxqlMhJIqtWsiQpIVlbc6k0=
+
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
   resolved "https://registry.npm.taobao.org/@webassemblyjs/ast/download/@webassemblyjs/ast-1.8.5.tgz#51b1c5fe6576a34953bf4b253df9f0d490d9e359"
@@ -2008,6 +2013,11 @@ array-filter@~0.0.0:
 array-flatten@1.1.1:
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/array-flatten/download/array-flatten-1.1.1.tgz#9a5f699051b1e7073328f2a008968b64ea2955d2"
+
+array-flatten@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.npm.taobao.org/array-flatten/download/array-flatten-2.1.2.tgz#24ef80a28c1a893617e2149b0c6d0d788293b099"
+  integrity sha1-JO+AoowaiTYX4hSbDG0NeIKTsJk=
 
 array-includes@^3.0.3:
   version "3.0.3"
@@ -2760,9 +2770,10 @@ callsites@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/callsites/download/callsites-2.0.0.tgz#06eb84f00eea413da86affefacbffb36093b3c50"
 
-callsites@^3.0.0:
+callsites@^3.0.0, callsites@^3.1.0:
   version "3.1.0"
   resolved "https://registry.npm.taobao.org/callsites/download/callsites-3.1.0.tgz#b3630abd8943432f54b3f0519238e33cd7df2f73"
+  integrity sha1-s2MKvYlDQy9Us/BRkjjjPNffL3M=
 
 camel-case@^3.0.0:
   version "3.0.0"
@@ -3108,7 +3119,7 @@ core-js@^2.4.0:
   version "2.6.9"
   resolved "https://registry.npm.taobao.org/core-js/download/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"
 
-core-js@^3.0.1, core-js@^3.0.4:
+core-js@^3.0.1, core-js@^3.0.4, core-js@^3.1.4:
   version "3.2.1"
   resolved "https://registry.npm.taobao.org/core-js/download/core-js-3.2.1.tgz#cd41f38534da6cc59f7db050fe67307de9868b09"
 
@@ -3970,6 +3981,11 @@ eslint-scope@^4.0.3:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
+esm@^3.2.22:
+  version "3.2.25"
+  resolved "https://registry.npm.taobao.org/esm/download/esm-3.2.25.tgz#342c18c29d56157688ba5ce31f8431fbb795cc10"
+  integrity sha1-NCwYwp1WFXaIulzjH4Qx+7eVzBA=
+
 esprima@^3.1.3:
   version "3.1.3"
   resolved "https://registry.npm.taobao.org/esprima/download/esprima-3.1.3.tgz#fdca51cee6133895e3c88d535ce49dbff62a4633"
@@ -4183,6 +4199,15 @@ fast-deep-equal@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/fast-deep-equal/download/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
 
+fast-geotiff@^1.0.0-beta.4:
+  version "1.0.0-beta.4"
+  resolved "https://registry.npm.taobao.org/fast-geotiff/download/fast-geotiff-1.0.0-beta.4.tgz#d8c2fe136ed3f3cd45e9401c5296913dfbc8c7a3"
+  integrity sha1-2ML+E27T881F6UAcUpaRPfvIx6M=
+  dependencies:
+    array-flatten "^2.1.2"
+    fast-lzw "^1.0.0-beta.3"
+    pop-zip "^1.0.0"
+
 fast-glob@^2.0.2:
   version "2.2.7"
   resolved "https://registry.npm.taobao.org/fast-glob/download/fast-glob-2.2.7.tgz#6953857c3afa475fff92ee6015d52da70a4cd39d"
@@ -4201,6 +4226,14 @@ fast-json-stable-stringify@2.x, fast-json-stable-stringify@^2.0.0:
 fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.npm.taobao.org/fast-levenshtein/download/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
+
+fast-lzw@^1.0.0-beta.3:
+  version "1.0.0-beta.3"
+  resolved "https://registry.npm.taobao.org/fast-lzw/download/fast-lzw-1.0.0-beta.3.tgz#2f627a8c972ce453842dff4f39380cf81597212e"
+  integrity sha1-L2J6jJcs5FOELf9POTgM+BWXIS4=
+  dependencies:
+    core-js "^3.1.4"
+    threads "^1.0.0-beta.3"
 
 fault@^1.0.2:
   version "1.0.3"
@@ -5255,6 +5288,13 @@ is-number@^7.0.0:
 is-object@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/is-object/download/is-object-1.0.1.tgz#8952688c5ec2ffd6b03ecc85e769e02903083470"
+
+is-observable@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npm.taobao.org/is-observable/download/is-observable-1.1.0.tgz#b3e986c8f44de950867cab5403f5a3465005975e"
+  integrity sha1-s+mGyPRN6VCGfKtUA/WjRlAFl14=
+  dependencies:
+    symbol-observable "^1.1.0"
 
 is-plain-obj@^1.0.0:
   version "1.1.0"
@@ -7006,6 +7046,11 @@ polished@^3.3.1:
   dependencies:
     "@babel/runtime" "^7.4.5"
 
+pop-zip@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/pop-zip/download/pop-zip-1.0.0.tgz#3dc114007b2cece74ff3b8cea73eb120c70db056"
+  integrity sha1-PcEUAHss7OdP87jOpz6xIMcNsFY=
+
 popper.js@^1.14.4, popper.js@^1.14.7:
   version "1.15.0"
   resolved "https://registry.npm.taobao.org/popper.js/download/popper.js-1.15.0.tgz#5560b99bbad7647e9faa475c6b8056621f5a4ff2"
@@ -8642,6 +8687,11 @@ svgo@^1.2.2:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
+symbol-observable@^1.1.0:
+  version "1.2.0"
+  resolved "https://registry.npm.taobao.org/symbol-observable/download/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
+  integrity sha1-wiaIrtTqs83C3+rLtWFmBWCgCAQ=
+
 symbol-tree@^3.2.2:
   version "3.2.4"
   resolved "https://registry.npm.taobao.org/symbol-tree/download/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
@@ -8721,6 +8771,19 @@ text-table@0.2.0:
   version "0.2.0"
   resolved "https://registry.npm.taobao.org/text-table/download/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
+threads@^1.0.0-beta.3:
+  version "1.0.0-beta.4"
+  resolved "https://registry.npm.taobao.org/threads/download/threads-1.0.0-beta.4.tgz#d96ef738580c0f0c2a9c274f9604b6a7e00d1ccc"
+  integrity sha1-2W73OFgMDwwqnCdPlgS2p+ANHMw=
+  dependencies:
+    "@types/zen-observable" "^0.8.0"
+    callsites "^3.1.0"
+    debug "^4.1.1"
+    is-observable "^1.1.0"
+    zen-observable "^0.8.14"
+  optionalDependencies:
+    tiny-worker ">= 2"
+
 throat@^4.0.0:
   version "4.1.0"
   resolved "https://registry.npm.taobao.org/throat/download/throat-4.1.0.tgz#89037cbc92c56ab18926e6ba4cbb200e15672a6a"
@@ -8756,6 +8819,13 @@ timers-browserify@^2.0.4:
 tiny-emitter@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npm.taobao.org/tiny-emitter/download/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+
+"tiny-worker@>= 2":
+  version "2.2.0"
+  resolved "https://registry.npm.taobao.org/tiny-worker/download/tiny-worker-2.2.0.tgz#056ce92d424c8d2c6f9fb8f9a5d2e3cdcb908bca"
+  integrity sha1-BWzpLUJMjSxvn7j5pdLjzcuQi8o=
+  dependencies:
+    esm "^3.2.22"
 
 tinycolor2@^1.4.1:
   version "1.4.1"
@@ -9479,6 +9549,11 @@ yargs@^13.3.0:
     which-module "^2.0.0"
     y18n "^4.0.0"
     yargs-parser "^13.1.1"
+
+zen-observable@^0.8.14:
+  version "0.8.14"
+  resolved "https://registry.npm.taobao.org/zen-observable/download/zen-observable-0.8.14.tgz#d33058359d335bc0db1f0af66158b32872af3bf7"
+  integrity sha1-0zBYNZ0zW8DbHwr2YVizKHKvO/c=
 
 zousan@^2.3.3:
   version "2.5.1"

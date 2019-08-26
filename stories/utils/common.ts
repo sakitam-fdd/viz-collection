@@ -4,6 +4,7 @@ import proj4 from 'proj4';
 import * as GeoTIFF from 'geotiff/dist/geotiff.bundle.min.js';
 // @ts-ignore
 import { contours } from 'd3-contour';
+// import { readRasterFromURL } from 'fast-geotiff';
 
 const lastConfig = {
   '-50': [0, 0, 255],
@@ -153,6 +154,28 @@ export function mathCoordinates(data: any, size: {
   }
   return res;
 }
+
+// export function getData(url: string) {
+//   return new Promise((resolve) => {
+//     (async function () {
+//       const data = await readRasterFromURL(url);
+//       console.time('start');
+//       console.log(data);
+//       const imgData = [];
+//       for (let i = 0, len = data[0].length; i < len; i++) {
+//         imgData.push(data[0][i] - 273.15);
+//       }
+//       const res = getGridPoints({
+//         data: data[0],
+//         width: data.width,
+//         height: data.height,
+//       });
+//       // initMap(res);
+//       console.timeEnd('start');
+//       resolve(res);
+//     })();
+//   });
+// }
 
 export function getData(url: string = './201908252200.tif') {
   // tslint:disable-next-line:ter-arrow-parens
