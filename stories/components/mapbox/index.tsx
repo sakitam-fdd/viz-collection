@@ -29,13 +29,13 @@ class Maptalks extends React.Component<PageProps, PageState> {
       container: this.container.current,
       style: 'mapbox://styles/mapbox/dark-v10',
       center: [120.2, 30.2],
-      zoom: 5,
+      zoom: 1,
     });
 
     map.on('load', () => {
-      const filters: string[] = [];
+      const filters: (string | number)[] = [];
       values.forEach((item: number, idx: number) => {
-        filters.push(String(item));
+        filters.push(item);
         filters.push(colors[idx]);
       });
       getData('./data/201908252200.tif').then((res: any) => {
@@ -52,6 +52,7 @@ class Maptalks extends React.Component<PageProps, PageState> {
               'match',
               ['get', 'value'],
               ...filters,
+              'rgba(255, 255, 255, 0)',
             ],
           },
         });

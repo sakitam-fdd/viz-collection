@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GeoJSON</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/openlayers@4.6.5/dist/ol.css" type="text/css">
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+  <script src="https://cdn.jsdelivr.net/npm/openlayers@4.6.5/dist/ol-debug.js"></script>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .map {
+      width: 100%;
+      height: calc(100% - 30px);
+    }
+  </style>
+</head>
+<body>
+<div id="map" class="map"></div>
+<div id="info">&nbsp;</div>
+<script>
+  const lastConfig = {
+    '-50': [0, 0, 255],
+    '-30': [0, 20, 255],
+    '-28': [0, 68, 255],
+    '-26': [0, 102, 255],
+    '-24': [0, 132, 255],
+    '-22': [0, 166, 255],
+    '-20': [0, 200, 255],
+    '-18': [0, 234, 255],
+    '-16': [0, 255, 247],
+    '-14': [0, 255, 212],
+    '-12': [0, 255, 179],
+    '-10': [0, 255, 144],
+    '-8': [0, 255, 115],
+    '-6': [0, 255, 81],
+    '-4': [0, 255, 47],
+    '-2': [0, 255, 13],
+  };
+
+  const config = {
+    '0': [17, 255, 0],
+    '2': [51, 255, 0],
+    '4': [85, 255, 0],
+    '6': [119, 255, 0],
+    '8': [149, 255, 0],
+    '10': [183, 255, 0],
+    '12': [217, 255, 0],
+    '14': [251, 255, 0],
+    '16': [255, 229, 0],
+    '18': [255, 195, 0],
+    '20': [255, 162, 0],
+    '22': [255, 128, 0],
+    '24': [255, 98, 0],
+    '26': [255, 64, 0],
+    '28': [255, 45, 0],
+    '30': [255, 35, 0],
+    '32': [255, 20, 0],
+    '35': [255, 0, 0],
+  };
+
+  let values = [];
+  const colors = [];
+  const extent = [70, 15, 140, 60];
+  const mercatorExtent = [
+    -20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244,
+  ];
+  // const mercatorExtent = transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+
+  Object.keys(lastConfig).forEach(key => {
+    values.push(key);
+    colors.push(`rgb(${lastConfig[key].join(',')})`);
+  });
+
+  Object.keys(config).forEach(key => {
+    values.push(key);
+    colors.push(`rgb(${config[key].join(',')})`);
+  });
+
+  values = values.map(val => {
+    console.log(val);
+    // return (Number(val) + 50) / (35 + 50);
+    return Number(val);
+  });
+
+  var dragAndDropInteraction = new ol.interaction.DragAndDrop({
+    formatConstructors: [
+      ol.format.GPX,
+      ol.format.GeoJSON,
+      ol.format.IGC,
+      ol.format.KML,
+      ol.format.TopoJSON
+    ]
+  });
+
+  var styleFunction = function(feature) {
+    const props = feature.getProperties();
+    return new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: props.color,
+        width: 1.5
+      }),
+      fill: new ol.style.Fill({
+        color: props.color,
+      })
+    });
+  };
+
+  var vectorSource = new ol.source.Vector({
+    // features: []
+  });
+
+  var vectorLayer = new ol.layer.Vector({
+    source: vectorSource,
+    style: styleFunction
+  });
+
+  var map = new ol.Map({
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM({
+          url: 'https://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}'
+        })
+      }),
+      vectorLayer
+    ],
+    target: 'map',
+    controls: ol.control.defaults({
+      attributionOptions: {
+        collapsible: false
+      }
+    }),
+    interactions: ol.interaction.defaults().extend([dragAndDropInteraction]),
+    view: new ol.View({
+      center: [0, 0],
+      zoom: 2
+    })
+  });
+
+  dragAndDropInteraction.on('addfeatures', function(event) {
+    console.log(event);
+    // const features = (new ol.format.GeoJSON()).readFeatures(res, {
+    //   dataProjection: 'EPSG:4326',
+    //   featureProjection: 'EPSG:3857'
+    // });
+    vectorSource.addFeatures(event.features);
+    map.getView().fit(vectorSource.getExtent());
+  });
+
+  var displayFeatureInfo = function(pixel) {
+    var features = [];
+    map.forEachFeatureAtPixel(pixel, function(feature) {
+      features.push(feature);
+    });
+    if (features.length > 0) {
+      var info = [];
+      var i, ii;
+      for (i = 0, ii = features.length; i < ii; ++i) {
+        info.push(features[i].get('lowValue'));
+        info.push(features[i].get('highValue'));
+      }
+      document.getElementById('info').innerHTML = info.join(', ') || '&nbsp';
+    } else {
+      document.getElementById('info').innerHTML = '&nbsp;';
+    }
+  };
+
+  map.on('pointermove', function(evt) {
+    if (evt.dragging) {
+      return;
+    }
+    var pixel = map.getEventPixel(evt.originalEvent);
+    displayFeatureInfo(pixel);
+  });
+
+  map.on('click', function(evt) {
+    displayFeatureInfo(evt.pixel);
+  });
+</script>
+</body>
+</html>
