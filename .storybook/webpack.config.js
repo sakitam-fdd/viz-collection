@@ -78,5 +78,42 @@ module.exports = async ({ config, mode }) => {
     })
   );
 
+  config.optimization.splitChunks = {
+    chunks: 'all',
+    cacheGroups: {
+      ol: {
+        name: 'chunk-ol', // split elementUI into a single package
+        priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+        test: /[\\/]node_modules[\\/]?ol(.*)/, // in order to adapt to cnpm
+        chunks: 'initial', // only package third parties that are initially dependent
+      },
+      maptalks: {
+        name: 'chunk-maptalks', // split elementUI into a single package
+        priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+        test: /[\\/]node_modules[\\/]?maptalks(.*)/, // in order to adapt to cnpm
+        chunks: 'initial', // only package third parties that are initially dependent
+      },
+      mapbox: {
+        name: 'chunk-mapbox', // split elementUI into a single package
+        priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+        test: /[\\/]node_modules[\\/]?mapbox(.*)/, // in order to adapt to cnpm
+        chunks: 'initial', // only package third parties that are initially dependent
+      },
+      libs: {
+        name: 'chunk-libs',
+        test: /[\\/]node_modules[\\/]/,
+        priority: 10,
+        chunks: 'initial', // only package third parties that are initially dependent
+      },
+      commons: {
+        name: 'chunk-commons',
+        test: path.resolve(__dirname, 'stories/components'),
+        minChunks: 3, //  minimum common number
+        priority: 5,
+        reuseExistingChunk: true,
+      },
+    },
+  };
+
   return config;
 };

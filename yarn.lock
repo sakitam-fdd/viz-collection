@@ -7353,6 +7353,7 @@ raw-loader@^2.0.0:
 rbush@^2.0.2:
   version "2.0.2"
   resolved "https://registry.npm.taobao.org/rbush/download/rbush-2.0.2.tgz#bb6005c2731b7ba1d5a9a035772927d16a614605"
+  integrity sha1-u2AFwnMbe6HVqaA1dykn0WphRgU=
   dependencies:
     quickselect "^1.0.1"
 

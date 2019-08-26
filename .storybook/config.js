@@ -1,4 +1,5 @@
 import { configure, addParameters } from '@storybook/react';
+// https://github.com/storybookjs/storybook/issues/6998
 
 addParameters({
   options: {

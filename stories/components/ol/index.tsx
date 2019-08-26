@@ -51,7 +51,7 @@ class Openlayers extends React.Component<PageProps, PageState> {
 
     getData('./data/201908252200.tif').then((res: any) => {
       const layer = new VectorLayer({
-        source: VectorSource({
+        source: new VectorSource({
           features: (new GeoJSON()).readFeatures(res, {
             dataProjection: 'EPSG:4326',
             featureProjection: 'EPSG:3857',
