@@ -65,7 +65,6 @@ Object.keys(config).forEach((key: number | string) => {
 });
 
 values = values.map((val: number | string) => {
-  console.log(val);
   // return (Number(val) + 50) / (35 + 50);
   return Number(val);
 });
