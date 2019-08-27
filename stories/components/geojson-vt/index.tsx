@@ -1,6 +1,10 @@
 import 'ol/ol.css';
 import * as React from 'react';
+// @ts-ignore
+import geojsonvt from 'geojson-vt';
 import { Map, View } from 'ol';
+// @ts-ignore
+import { GeoJSON } from 'ol/format';
 // @ts-ignore
 import { fromLonLat, Projection } from 'ol/proj';
 // @ts-ignore
@@ -9,7 +13,7 @@ import { Tile as TileLayer, VectorTile as VectorTileLayer } from 'ol/layer';
 import { XYZ, VectorTile as VectorTileSource } from 'ol/source';
 // @ts-ignore
 import { Fill, Style } from 'ol/style';
-import { values, colors } from '../../utils/common';
+import { values, colors, replacer } from '../../utils/common';
 // @ts-ignore
 import Vt from '../../worker/vt.worker';
 
@@ -83,20 +87,31 @@ class Openlayers extends React.Component<PageProps, PageState> {
   onMessage({ data: payload }: any) {
     const { type, status, data } = payload;
     if (!this.worker) return;
+    let tileIndex: any;
     if (type === 'getData' && status === 'success') {
-      this.worker.postMessage({
-        data,
-        action: 'create-vt',
+      // this.worker.postMessage({
+      //   data,
+      //   action: 'create-vt',
+      // });
+      tileIndex = geojsonvt(payload.data, {
+        extent: 4096,
+        debug: 1,
       });
-    } else if (type === 'create-vt') {
       const layer = new VectorTileLayer({
         source: new VectorTileSource({
+          format: new GeoJSON(),
           tileLoadFunction: (tile: any) => {
-            console.log(tile);
-            this.worker && this.worker.postMessage({
-              tile,
-              tilePixels,
-              action: 'getTile',
+            const format = tile.getFormat();
+            const tileCoord = tile.getTileCoord();
+            const tileData = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
+            const featureString = JSON.stringify({
+              type: 'FeatureCollection',
+              features: tileData ? tileData.features : [],
+            }, replacer);
+            const features = format.readFeatures(featureString);
+            tile.setLoader(() => {
+              tile.setFeatures(features);
+              tile.setProjection(tilePixels);
             });
           },
           url: 'data:', // arbitrary url, we don't use it in the tileLoadFunction
@@ -118,6 +133,52 @@ class Openlayers extends React.Component<PageProps, PageState> {
         },
       });
       this.map.addLayer(layer);
+    } else if (type === 'create-vt') {
+      const layer = new VectorTileLayer({
+        format: new GeoJSON(),
+        source: new VectorTileSource({
+          tileLoadFunction: (tile: any) => {
+            const format = tile.getFormat();
+            const tileCoord = tile.getTileCoord();
+            const data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
+            const featureString = JSON.stringify({
+              type: 'FeatureCollection',
+              features: data ? data.features : [],
+            }, replacer);
+            const features = format.readFeatures(featureString);
+            tile.setLoader(() => {
+              tile.setFeatures(features);
+              tile.setProjection(tilePixels);
+            });
+          },
+          url: 'data:', // arbitrary url, we don't use it in the tileLoadFunction
+          wrapX: false,
+        }),
+        style: (feature: any) => {
+          const props = feature.getProperties();
+          const idx = values.findIndex((item: number) => item === props.value);
+          return new Style({
+            // stroke: new ol.style.Stroke({
+            //   color: 'blue',
+            //   lineDash: [4],
+            //   width: 0
+            // }),
+            fill: new Fill({
+              color: colors[idx],
+            }),
+          });
+        },
+      });
+      this.map.addLayer(layer);
+    } else if (type === 'getTile') {
+      // FIXME: don't use
+      const tile = payload.tile;
+      const format = tile.getFormat();
+      const features = format.readFeatures(data);
+      tile.setLoader(() => {
+        tile.setFeatures(features);
+        tile.setProjection(tilePixels);
+      });
     }
   }
 

@@ -2,49 +2,11 @@
 import geojsonvt from 'geojson-vt';
 // @ts-ignore
 import * as GeoTIFF from 'geotiff/dist/geotiff.bundle.min.js';
-import { getGridPoints } from '../utils/common';
+import { getGridPoints, replacer } from '../utils/common';
 import { ajax } from '../utils/ajax';
 
 const ctx: Worker = self as any;
 let tileIndex: geojsonvt;
-
-const replacer = function (_key: string, value: any) {
-  if (value.geometry) {
-    let type;
-    const rawType = value.type;
-    let geometry = value.geometry;
-
-    if (rawType === 1) {
-      type = 'MultiPoint';
-      if (geometry.length === 1) {
-        type = 'Point';
-        geometry = geometry[0];
-      }
-    } else if (rawType === 2) {
-      type = 'MultiLineString';
-      if (geometry.length === 1) {
-        type = 'LineString';
-        geometry = geometry[0];
-      }
-    } else if (rawType === 3) {
-      type = 'Polygon';
-      if (geometry.length > 1) {
-        type = 'MultiPolygon';
-        geometry = [geometry];
-      }
-    }
-
-    return {
-      type: 'Feature',
-      geometry: {
-        type,
-        coordinates: geometry,
-      },
-      properties: value.tags,
-    };
-  }
-  return value;
-};
 
 ctx.addEventListener('message', async ({ data: payload }) => {
   const { action, url } = payload;
@@ -82,12 +44,11 @@ ctx.addEventListener('message', async ({ data: payload }) => {
     });
     ctx.postMessage({
       type: action,
+      data: tileIndex,
       status: 'success',
     });
   } else if (action === 'getTile') {
     const tile = payload.tile;
-    const tilePixels = payload.tilePixels;
-    const format = tile.getFormat();
     const tileCoord = tile.getTileCoord();
     const data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
     const featureString = JSON.stringify({
@@ -95,14 +56,10 @@ ctx.addEventListener('message', async ({ data: payload }) => {
       features: data ? data.features : [],
     }, replacer);
     ctx.postMessage({
+      tile,
       type: action,
       data: featureString,
       status: 'success',
-    });
-    const features = format.readFeatures(featureString);
-    tile.setLoader(() => {
-      tile.setFeatures(features);
-      tile.setProjection(tilePixels);
     });
   }
 });
