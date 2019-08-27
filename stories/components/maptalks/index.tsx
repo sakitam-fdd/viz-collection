@@ -2,7 +2,9 @@ import 'maptalks/dist/maptalks.css';
 import * as React from 'react';
 // @ts-ignore
 import { Map, GeoJSON, VectorLayer, TileLayer } from 'maptalks';
-import { values, colors, getData } from '../../utils/common';
+import { values, colors } from '../../utils/common';
+// @ts-ignore
+import TiffDecode from '../../worker/tiffDecode.worker';
 
 export interface PageProps {}
 
@@ -11,6 +13,9 @@ export interface PageState {}
 class Maptalks extends React.Component<PageProps, PageState> {
   private container: React.RefObject<HTMLElement>;
   private style: { width: string; height: string };
+
+  private worker: Worker | undefined;
+  private map: Map;
   constructor(props: PageProps, context: any) {
     super(props, context);
 
@@ -20,10 +25,12 @@ class Maptalks extends React.Component<PageProps, PageState> {
       height: '100vh',
       width: '100vw',
     };
+
+    this.onMessage = this.onMessage.bind(this);
   }
 
   initMap() {
-    const map = new Map(this.container.current, {
+    this.map = new Map(this.container.current, {
       center: [120.2, 30.2],
       zoom: 5,
       pitch: 0,
@@ -38,9 +45,38 @@ class Maptalks extends React.Component<PageProps, PageState> {
       }),
     });
 
-    getData('./data/201908252200.tif').then((res: any) => {
-      const data = GeoJSON.toGeometry(res);
-      const layer = new VectorLayer('2', data, {
+    // TODO: 路径必须是完整地址
+    this.initWorker('http://localhost:3003/data/201908252200.tif');
+  }
+
+  componentDidMount() {
+    if (this.container) {
+      this.initMap();
+    }
+  }
+
+  initWorker(url: string) {
+    this.worker = new TiffDecode();
+
+    if (this.worker) {
+      this.worker.addEventListener('message', this.onMessage);
+      this.worker.postMessage({
+        url,
+        action: 'getData',
+      });
+    }
+  }
+
+  onMessage({ data: payload }: any) {
+    const { status, data } = payload;
+    const filters: (string | number)[] = [];
+    values.forEach((item: number, idx: number) => {
+      filters.push(item);
+      filters.push(colors[idx]);
+    });
+    if (status === 'success') {
+      const geometries = GeoJSON.toGeometry(data);
+      const layer = new VectorLayer('2', geometries, {
         enableSimplify: true,
         style: [
           ...values.map((val: number, index: number) => ({
@@ -54,19 +90,17 @@ class Maptalks extends React.Component<PageProps, PageState> {
           })),
         ],
       });
-      map.addLayer(layer);
-      console.log(layer.getGeometries());
-    });
-  }
-
-  componentDidMount() {
-    if (this.container) {
-      this.initMap();
-      console.log(this.container);
+      this.map.addLayer(layer);
     }
   }
 
   componentWillReceiveProps() {}
+
+  componentWillUnmount(): void {
+    if (this.worker) {
+      this.worker.terminate();
+    }
+  }
 
   render() {
     // const { children } = this.props;

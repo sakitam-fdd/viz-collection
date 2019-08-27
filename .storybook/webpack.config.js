@@ -8,6 +8,46 @@ module.exports = async ({ config, mode }) => {
   // You can change the configuration based on that.
   // 'PRODUCTION' is used when building the static version of storybook.
 
+  // https://github.com/webpack-contrib/worker-loader/issues/166
+  // https://github.com/webpack/webpack/issues/6642
+  config.output.globalObject = 'this';
+
+  config.resolve.extensions = [
+    '.mjs',
+    '.js',
+    '.jsx',
+    '.vue',
+    '.json',
+    '.wasm',
+    '.ts',
+    '.tsx'
+  ];
+
+  config.module.rules.push({
+    test: /\.worker\.(js|ts)$/,
+    use: {
+      loader: 'worker-loader',
+      options: {
+        // inline: mode === 'production', // 是否进行内联
+        inline: true, // 是否进行内联
+        fallback: false,
+        // publicPath: path.resolve(__dirname, '../public/workers'),
+        // name: '[name].[hash:8].js'
+      }
+    }
+  });
+
+  config.module.rules.push({
+    test: /\.less$/,
+    use: ['style-loader', 'css-loader', 'less-loader'],
+    include: path.resolve(__dirname, '../'),
+  });
+
+  config.module.rules.push({
+    test: /\.glsl$/,
+    loader: 'raw-loader'
+  });
+
   // Return the altered config
   // Typescript support
   config.module.rules.push(
@@ -16,6 +56,9 @@ module.exports = async ({ config, mode }) => {
       use: [
         {
           loader: 'cache-loader',
+          options: {
+            // exclude: path.resolve('stories/worker'),
+          }
         },
         {
           loader: 'ts-loader',
@@ -35,41 +78,6 @@ module.exports = async ({ config, mode }) => {
       ]
     }
   );
-
-  config.module.rules.push({
-    test: /\.worker\.(js|ts)$/,
-    use: {
-      loader: 'worker-loader',
-      options: {
-        inline: mode === 'production',
-        fallback: false,
-        // publicPath: path.resolve(__dirname, '../public/workers'),
-        name: '[name].[hash].js'
-      }
-    }
-  });
-
-  config.module.rules.push({
-    test: /\.less$/,
-    use: ['style-loader', 'css-loader', 'less-loader'],
-    include: path.resolve(__dirname, '../'),
-  });
-
-  config.module.rules.push({
-    test: /\.glsl$/,
-    loader: 'raw-loader'
-  });
-
-  config.resolve.extensions = [
-    '.mjs',
-    '.js',
-    '.jsx',
-    '.vue',
-    '.json',
-    '.wasm',
-    '.ts',
-    '.tsx'
-  ];
 
   config.plugins.push(
     new ForkTsCheckerWebpackPlugin({
@@ -116,10 +124,6 @@ module.exports = async ({ config, mode }) => {
       },
     },
   };
-
-  // https://github.com/webpack-contrib/worker-loader/issues/166
-  // https://github.com/webpack/webpack/issues/6642
-  config.output.globalObject = 'this';
 
   return config;
 };

@@ -11,7 +11,7 @@ export interface PageProps {}
 
 export interface PageState {}
 
-class Mapbox extends React.Component<PageProps, PageState> {
+class Maptalks extends React.Component<PageProps, PageState> {
   private container: React.RefObject<HTMLElement>;
   private style: { width: string; height: string };
 
@@ -27,8 +27,6 @@ class Mapbox extends React.Component<PageProps, PageState> {
       height: '100vh',
       width: '100vw',
     };
-
-    this.onMessage = this.onMessage.bind(this);
   }
 
   initMap() {
@@ -42,62 +40,47 @@ class Mapbox extends React.Component<PageProps, PageState> {
     });
 
     map.on('load', () => {
-      fetch('./data/201908252200.tif', {
-        method: 'GET',
-      })
-        .then((response) => {
-          return response.arrayBuffer();
-        })
-        .then((arrayBuffer: any) => {
-          this.initWorker(arrayBuffer);
-        });
-    });
-
-    map.on('sourcedataloading', (e: any) => { // 数据加载完成
-      console.log(e);
+      this.initWorker();
     });
 
     this.map = map;
   }
 
-  initWorker(data: any) {
+  initWorker() {
     this.worker = new TransformData();
 
     if (this.worker) {
       this.worker.addEventListener('message', this.onMessage);
       this.worker.postMessage({
-        data,
         action: 'getData',
+        url: './data/201908252200.tif',
       });
     }
   }
 
-  onMessage({ data: payload }: any) {
-    const { status, data } = payload;
+  onMessage(data: any) {
     const filters: (string | number)[] = [];
     values.forEach((item: number, idx: number) => {
       filters.push(item);
       filters.push(colors[idx]);
     });
-    if (status === 'success') {
-      this.map.addLayer({
-        id: 'maine',
-        type: 'fill',
-        source: {
-          data,
-          type: 'geojson',
-        },
-        layout: {},
-        paint: {
-          'fill-color': [
-            'match',
-            ['get', 'value'],
-            ...filters,
-            'rgba(255, 255, 255, 0)',
-          ],
-        },
-      });
-    }
+    this.map.addLayer({
+      id: 'maine',
+      type: 'fill',
+      source: {
+        data,
+        type: 'geojson',
+      },
+      layout: {},
+      paint: {
+        'fill-color': [
+          'match',
+          ['get', 'value'],
+          ...filters,
+          'rgba(255, 255, 255, 0)',
+        ],
+      },
+    });
   }
 
   componentDidMount() {
@@ -108,12 +91,6 @@ class Mapbox extends React.Component<PageProps, PageState> {
 
   componentWillReceiveProps() {}
 
-  componentWillUnmount(): void {
-    if (this.worker) {
-      this.worker.terminate();
-    }
-  }
-
   render() {
     // const { children } = this.props;
     // @ts-ignore
@@ -121,4 +98,4 @@ class Mapbox extends React.Component<PageProps, PageState> {
   }
 }
 
-export default Mapbox;
+export default Maptalks;

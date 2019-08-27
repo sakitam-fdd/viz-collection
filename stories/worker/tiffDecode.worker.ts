@@ -1,12 +1,19 @@
 // @ts-ignore
 import * as GeoTIFF from 'geotiff/dist/geotiff.bundle.min.js';
 import { getGridPoints } from '../utils/common';
+import { ajax } from '../utils/ajax';
 
 const ctx: Worker = self as any;
 
 ctx.addEventListener('message', async ({ data: payload }) => {
-  const { action, data } = payload;
+  const { action, url } = payload;
   if (action === 'getData') {
+    console.log(url);
+    const data =  await ajax(url, {
+      methods: 'get',
+      responseType: 'arraybuffer',
+    });
+
     const tiff = await GeoTIFF.fromArrayBuffer(data);
     const image = await tiff.getImage();
     const imageData = await image.readRasters(); // 273.15
