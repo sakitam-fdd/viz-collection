@@ -1,9 +1,9 @@
 {
-  "name": "maptalks.plotty",
+  "name": "viz-collection",
   "version": "1.0.0",
   "description": "A plugin for maptalks plotty darw",
   "author": "sakitam-fdd <smilefdd@gmail.com>",
-  "homepage": "",
+  "homepage": "https://github.com/sakitam-fdd/viz-collection.git",
   "private": false,
   "unpkg": "dist/maptalks.plotty.js",
   "main": "dist/maptalks.plotty.js",
