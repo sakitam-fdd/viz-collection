@@ -46,6 +46,7 @@
     "@storybook/addon-actions": "^5.2.0-alpha.44",
     "ol": "^5.3.3",
     "d3": "^5.11.0",
+    "three": "^0.97.0",
     "proj4": "^2.5.0",
     "earcut": "^2.1.5",
     "gl-matrix": "^3.1.0",

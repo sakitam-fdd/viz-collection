@@ -46,6 +46,11 @@ const config = {
   35: [255, 0, 0],
 };
 
+const originConfig = {
+  ...lastConfig,
+  ...config,
+};
+
 let values: any = [];
 const colors: string[] = [];
 // const extent = [70, 15, 140, 60];
@@ -102,6 +107,7 @@ export function getGridPoints(data: any) {
         type: 'Feature',
         properties: {
           value: item.value,
+          color: `rgb(${originConfig[String(item.value)].join(',')})`,
         },
         geometry: {
           coordinates,

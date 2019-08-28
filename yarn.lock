@@ -8833,6 +8833,11 @@ threads@^1.0.0-beta.3:
   optionalDependencies:
     tiny-worker ">= 2"
 
+three@^0.97.0:
+  version "0.97.0"
+  resolved "https://registry.npm.taobao.org/three/download/three-0.97.0.tgz#76141e1b0ace14246fe9198a458fefddc98a4e30"
+  integrity sha1-dhQeGwrOFCRv6RmKRY/v3cmKTjA=
+
 throat@^4.0.0:
   version "4.1.0"
   resolved "https://registry.npm.taobao.org/throat/download/throat-4.1.0.tgz#89037cbc92c56ab18926e6ba4cbb200e15672a6a"
