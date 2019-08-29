@@ -93,21 +93,23 @@ class ThreePolygon extends React.Component<PageProps, PageState> {
         const light = new THREE.AmbientLight(0xffffff);
         // light.position.set(0, -10, 10).normalize();
         scene.add(light);
+        const meshs = [];
         for (let i = 0, len = features.length; i < len; i++) {
           const feature = features[i];
           if (feature.geometry.coordinates.length > 0) {
             const color = colorThreeHex(feature.properties.color);
-            console.log(color, feature.properties.color);
             const m = new THREE.MeshPhongMaterial({ color, opacity : 0.7 });
             // m.side = THREE.BackSide;
             const mesh = me.toExtrudeMesh(GeoJSON.toGeometry(feature), 0, m, 0);
             if (Array.isArray(mesh)) {
-              scene.add.apply(scene, mesh);
+              meshs.push(...mesh);
             } else {
-              scene.add(mesh);
+              // scene.add(mesh);
+              meshs.push(mesh);
             }
           }
         }
+        scene.add.apply(scene, meshs);
       };
       this.map.addLayer(threeLayer);
     }

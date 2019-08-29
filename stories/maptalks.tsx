@@ -2,6 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import Maptalks from './components/maptalks';
 import ThreePolygon from './components/maptalks/ThreePolygon';
+import MapboxVector from './components/maptalks/MapboxVector';
 import MaptalksVectorTile from './components/maptalks/vectorTile';
 // @ts-ignore
 import * as markdownNotes from './components/Button/index.md';
@@ -13,6 +14,9 @@ storiesOf('maptalks', module)
   ), {
     notes: { markdown: markdownNotes },
   })
+  .add('mapbox-vector', () => (
+    <MapboxVector />
+  ))
   .add('vector', () => (
     <MaptalksVectorTile />
   ), {

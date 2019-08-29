@@ -1029,6 +1029,11 @@
   resolved "https://registry.npm.taobao.org/@mapbox/point-geometry/download/@mapbox/point-geometry-0.1.0.tgz#8a83f9335c7860effa2eeeca254332aa0aeed8f2"
   integrity sha1-ioP5M1x4YO/6Lu7KJUMyqgru2PI=
 
+"@mapbox/shelf-pack@^3.1.0":
+  version "3.2.0"
+  resolved "https://registry.npm.taobao.org/@mapbox/shelf-pack/download/@mapbox/shelf-pack-3.2.0.tgz#df3630ecce8c042817c9a365b88078412963de64"
+  integrity sha1-3zYw7M6MBCgXyaNluIB4QSlj3mQ=
+
 "@mapbox/tiny-sdf@^1.1.0":
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/@mapbox/tiny-sdf/download/@mapbox/tiny-sdf-1.1.1.tgz#16a20c470741bfe9191deb336f46e194da4a91ff"
@@ -1039,7 +1044,7 @@
   resolved "https://registry.npm.taobao.org/@mapbox/unitbezier/download/@mapbox/unitbezier-0.0.0.tgz#15651bd553a67b8581fb398810c98ad86a34524e"
   integrity sha1-FWUb1VOme4WB+zmIEMmK2Go0Uk4=
 
-"@mapbox/vector-tile@^1.3.1":
+"@mapbox/vector-tile@^1.3.0", "@mapbox/vector-tile@^1.3.1":
   version "1.3.1"
   resolved "https://registry.npm.taobao.org/@mapbox/vector-tile/download/@mapbox/vector-tile-1.3.1.tgz#d3a74c90402d06e89ec66de49ec817ff53409666"
   integrity sha1-06dMkEAtBuiexm3knsgX/1NAlmY=
@@ -1055,9 +1060,106 @@
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/@maptalks/feature-filter/download/@maptalks/feature-filter-1.0.0.tgz#bfcc7f705e6de5c6c3d3802a3b5081272c877fc8"
 
-"@maptalks/function-type@^1.2.3":
+"@maptalks/function-type@^1.2.2", "@maptalks/function-type@^1.2.3":
   version "1.2.3"
   resolved "https://registry.npm.taobao.org/@maptalks/function-type/download/@maptalks/function-type-1.2.3.tgz#2f5c33b095af452c727026801bf1496ff78fe777"
+
+"@maptalks/fusiongl@^0.1.0":
+  version "0.1.1"
+  resolved "https://registry.npm.taobao.org/@maptalks/fusiongl/download/@maptalks/fusiongl-0.1.1.tgz#1b81505debb4b7b8f5cdec912d786f297c2c338e"
+  integrity sha1-G4FQXeu0t7j1zeyRLXhvKXwsM44=
+  dependencies:
+    fast-deep-equal "^2.0.1"
+
+"@maptalks/gl@^0.2.3", "@maptalks/gl@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.npm.taobao.org/@maptalks/gl/download/@maptalks/gl-0.2.4.tgz#9df1def2f542e9304cda1c69c0f1ce6766152da8"
+  integrity sha1-nfHe8vVC6TBM2hxpwPHOZ2YVLag=
+  dependencies:
+    "@maptalks/fusiongl" "^0.1.0"
+    "@maptalks/regl" "^1.3.11"
+    "@maptalks/reshader.gl" "^0.2.4"
+    gl-matrix "^2.6.1"
+
+"@maptalks/regl@^1.3.11":
+  version "1.3.11"
+  resolved "https://registry.npm.taobao.org/@maptalks/regl/download/@maptalks/regl-1.3.11.tgz#6785ff0e46874a8aa673d84ddf4dc0f06ca3522b"
+  integrity sha1-Z4X/DkaHSoqmc9hN303A8GyjUis=
+
+"@maptalks/reshader.gl@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.npm.taobao.org/@maptalks/reshader.gl/download/@maptalks/reshader.gl-0.2.4.tgz#0e3e42e06a5b9678294a5b24b030bae965c9b833"
+  integrity sha1-Dj5C4GpblngpSlsksDC66WXJuDM=
+  dependencies:
+    "@maptalks/tbn-packer" "^1.2.1"
+    cubemap-sh "0.2.1"
+    gl-matrix "^2.6.1"
+    zousan "^2.3.3"
+
+"@maptalks/tbn-packer@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.npm.taobao.org/@maptalks/tbn-packer/download/@maptalks/tbn-packer-1.2.1.tgz#a2bdc35a6eeb770fbf3db29a44b3768de3861f3a"
+  integrity sha1-or3DWm7rdw+/PbKaRLN2jeOGHzo=
+  dependencies:
+    gl-matrix "^3.0.0"
+
+"@maptalks/vector-packer@^0.1.52":
+  version "0.1.52"
+  resolved "https://registry.npm.taobao.org/@maptalks/vector-packer/download/@maptalks/vector-packer-0.1.52.tgz#bb4db3b3b4e6dad32188bdd9da2fad4923cf0f39"
+  integrity sha1-u02zs7Tm2tMhiL3Z2i+tSSPPDzk=
+  dependencies:
+    "@mapbox/point-geometry" "^0.1.0"
+    "@mapbox/shelf-pack" "^3.1.0"
+    "@mapbox/tiny-sdf" "^1.1.0"
+    "@maptalks/feature-filter" "^1.0.0"
+    "@maptalks/function-type" "^1.2.2"
+    "@maptalks/tbn-packer" "^1.2.1"
+    color "^3.0.0"
+    earcut "^2.1.3"
+    gl-matrix "^2.6.1"
+    quickselect "^1.0.0"
+    tinyqueue "^1.1.0"
+    zousan "^2.3.3"
+
+"@maptalks/vt-plugin@^0.1.56":
+  version "0.1.56"
+  resolved "https://registry.npm.taobao.org/@maptalks/vt-plugin/download/@maptalks/vt-plugin-0.1.56.tgz#fc540818fcffd17e9c2e5e92d93124b792e0bf15"
+  integrity sha1-/FQIGPz/0X6cLl6S2TEkt5LgvxU=
+  dependencies:
+    animation-easings "^0.1.0"
+    color "^3.0.0"
+
+"@maptalks/vt.basic@^0.1.57":
+  version "0.1.57"
+  resolved "https://registry.npm.taobao.org/@maptalks/vt.basic/download/@maptalks/vt.basic-0.1.57.tgz#92dc16ba95c2695b633ffbe7869c3991609c30c5"
+  integrity sha1-ktwWupXCaVtjP/vnhpw5kWCcMMU=
+  dependencies:
+    "@mapbox/point-geometry" "^0.1.0"
+    "@maptalks/function-type" "^1.2.2"
+    "@maptalks/gl" "^0.2.3"
+    "@maptalks/vt-plugin" "^0.1.56"
+    color "^3.0.0"
+
+"@maptalks/vt@^0.1.57":
+  version "0.1.57"
+  resolved "https://registry.npm.taobao.org/@maptalks/vt/download/@maptalks/vt-0.1.57.tgz#c518bbbfc5ca1799ffdeaab9c1018e1af81abd10"
+  integrity sha1-xRi7v8XKF5n/3qq5wQGOGvgavRA=
+  dependencies:
+    "@mapbox/point-geometry" "^0.1.0"
+    "@mapbox/vector-tile" "^1.3.0"
+    "@maptalks/feature-filter" "^1.0.0"
+    "@maptalks/gl" "^0.2.3"
+    "@maptalks/tbn-packer" "^1.2.1"
+    "@maptalks/vector-packer" "^0.1.52"
+    color "^3.0.0"
+    earcut "^2.1.3"
+    fast-deep-equal "^2.0.1"
+    geojson-vt "^3.2.0"
+    gl-matrix "^2.6.1"
+    pbf "^3.0.5"
+    quickselect "^1.0.0"
+    rbush "^2.0.2"
+    vt-pbf "^3.1.0"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -1915,6 +2017,11 @@ ajv@^6.1.0, ajv@^6.10.2, ajv@^6.5.5:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
+
+animation-easings@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npm.taobao.org/animation-easings/download/animation-easings-0.1.0.tgz#acbd9ee4e187cef6ee9273bc498798798b014331"
+  integrity sha1-rL2e5OGHzvbuknO8SYeYeYsBQzE=
 
 ansi-align@^3.0.0:
   version "3.0.0"
@@ -3001,7 +3108,7 @@ collection-visit@^1.0.0:
     map-visit "^1.0.0"
     object-visit "^1.0.0"
 
-color-convert@^1.9.0:
+color-convert@^1.9.0, color-convert@^1.9.1:
   version "1.9.3"
   resolved "https://registry.npm.taobao.org/color-convert/download/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
   dependencies:
@@ -3010,6 +3117,27 @@ color-convert@^1.9.0:
 color-name@1.1.3:
   version "1.1.3"
   resolved "https://registry.npm.taobao.org/color-name/download/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
+
+color-name@^1.0.0:
+  version "1.1.4"
+  resolved "https://registry.npm.taobao.org/color-name/download/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
+  integrity sha1-wqCah6y95pVD3m9j+jmVyCbFNqI=
+
+color-string@^1.5.2:
+  version "1.5.3"
+  resolved "https://registry.npm.taobao.org/color-string/download/color-string-1.5.3.tgz#c9bbc5f01b58b5492f3d6857459cb6590ce204cc"
+  integrity sha1-ybvF8BtYtUkvPWhXRZy2WQziBMw=
+  dependencies:
+    color-name "^1.0.0"
+    simple-swizzle "^0.2.2"
+
+color@^3.0.0:
+  version "3.1.2"
+  resolved "https://registry.npm.taobao.org/color/download/color-3.1.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcolor%2Fdownload%2Fcolor-3.1.2.tgz#68148e7f85d41ad7649c5fa8c8106f098d229e10"
+  integrity sha1-aBSOf4XUGtdknF+oyBBvCY0inhA=
+  dependencies:
+    color-convert "^1.9.1"
+    color-string "^1.5.2"
 
 colors@^1.1.2:
   version "1.3.3"
@@ -3324,6 +3452,13 @@ cssstyle@^1.0.0:
 csstype@^2.2.0, csstype@^2.5.7:
   version "2.6.6"
   resolved "https://registry.npm.taobao.org/csstype/download/csstype-2.6.6.tgz#c34f8226a94bbb10c32cc0d714afdf942291fc41"
+
+cubemap-sh@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.npm.taobao.org/cubemap-sh/download/cubemap-sh-0.2.1.tgz#3084afa2f56cb01f81dc066e70ea9287504eef94"
+  integrity sha1-MISvovVssB+B3AZucOqSh1BO75Q=
+  dependencies:
+    gl-vec3 "^1.0.3"
 
 cyclist@~0.2.2:
   version "0.2.2"
@@ -3823,7 +3958,7 @@ duplexify@^3.4.2, duplexify@^3.4.5, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
-earcut@^2.1.5:
+earcut@^2.1.3, earcut@^2.1.5:
   version "2.1.5"
   resolved "https://registry.npm.taobao.org/earcut/download/earcut-2.1.5.tgz#829280a9a3a0f5fee0529f0a47c3e4eff09b21e4"
   integrity sha1-gpKAqaOg9f7gUp8KR8Pk7/CbIeQ=
@@ -4544,7 +4679,7 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
-geojson-vt@^3.2.1:
+geojson-vt@^3.2.0, geojson-vt@^3.2.1:
   version "3.2.1"
   resolved "https://registry.npm.taobao.org/geojson-vt/download/geojson-vt-3.2.1.tgz#f8adb614d2c1d3f6ee7c4265cad4bbf3ad60c8b7"
   integrity sha1-+K22FNLB0/bufEJlytS7861gyLc=
@@ -4580,10 +4715,20 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
+gl-matrix@^2.6.1:
+  version "2.8.1"
+  resolved "https://registry.npm.taobao.org/gl-matrix/download/gl-matrix-2.8.1.tgz#1c7873448eac61d2cd25803a074e837bd42581a3"
+  integrity sha1-HHhzRI6sYdLNJYA6B06De9QlgaM=
+
 gl-matrix@^3.0.0, gl-matrix@^3.1.0:
   version "3.1.0"
   resolved "https://registry.npm.taobao.org/gl-matrix/download/gl-matrix-3.1.0.tgz#f5b2de17d8fed95a79e5025b10cded0ab9ccbed0"
   integrity sha1-9bLeF9j+2Vp55QJbEM3tCrnMvtA=
+
+gl-vec3@^1.0.3:
+  version "1.1.3"
+  resolved "https://registry.npm.taobao.org/gl-vec3/download/gl-vec3-1.1.3.tgz#a47c62f918774a06cbed1b65bcd0288ecbb03826"
+  integrity sha1-pHxi+Rh3SgbL7RtlvNAojsuwOCY=
 
 glob-parent@^3.1.0:
   version "3.1.0"
@@ -5182,6 +5327,11 @@ is-alphanumerical@^1.0.0:
 is-arrayish@^0.2.1:
   version "0.2.1"
   resolved "https://registry.npm.taobao.org/is-arrayish/download/is-arrayish-0.2.1.tgz#77c99840527aa8ecb1a8ba697b80645a7a926a9d"
+
+is-arrayish@^0.3.1:
+  version "0.3.2"
+  resolved "https://registry.npm.taobao.org/is-arrayish/download/is-arrayish-0.3.2.tgz#4574a2ae56f7ab206896fb431eaeed066fdf8f03"
+  integrity sha1-RXSirlb3qyBolvtDHq7tBm/fjwM=
 
 is-binary-path@^1.0.0:
   version "1.0.1"
@@ -7383,7 +7533,7 @@ querystringify@^2.1.1:
   version "2.1.1"
   resolved "https://registry.npm.taobao.org/querystringify/download/querystringify-2.1.1.tgz#60e5a5fd64a7f8bfa4d2ab2ed6fdf4c85bad154e"
 
-quickselect@^1.0.1:
+quickselect@^1.0.0, quickselect@^1.0.1:
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/quickselect/download/quickselect-1.1.1.tgz#852e412ce418f237ad5b660d70cffac647ae94c2"
 
@@ -8335,6 +8485,13 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.npm.taobao.org/signal-exit/download/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
+simple-swizzle@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.npm.taobao.org/simple-swizzle/download/simple-swizzle-0.2.2.tgz#a4da6b635ffcccca33f70d17cb92592de95e557a"
+  integrity sha1-pNprY1/8zMoz9w0Xy5JZLeleVXo=
+  dependencies:
+    is-arrayish "^0.3.1"
+
 simplebar-react@^1.0.0-alpha.6:
   version "1.1.0"
   resolved "https://registry.npm.taobao.org/simplebar-react/download/simplebar-react-1.1.0.tgz#9241817265aee28b40abced66d6a2663e046d721"
@@ -8885,6 +9042,11 @@ tinycolor2@^1.4.1:
   version "1.4.1"
   resolved "https://registry.npm.taobao.org/tinycolor2/download/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
 
+tinyqueue@^1.1.0:
+  version "1.2.3"
+  resolved "https://registry.npm.taobao.org/tinyqueue/download/tinyqueue-1.2.3.tgz#b6a61de23060584da29f82362e45df1ec7353f3d"
+  integrity sha1-tqYd4jBgWE2in4I2LkXfHsc1Pz0=
+
 tinyqueue@^2.0.0:
   version "2.0.3"
   resolved "https://registry.npm.taobao.org/tinyqueue/download/tinyqueue-2.0.3.tgz#64d8492ebf39e7801d7bd34062e29b45b2035f08"
@@ -9301,7 +9463,7 @@ vm-browserify@^1.0.1:
   version "1.1.0"
   resolved "https://registry.npm.taobao.org/vm-browserify/download/vm-browserify-1.1.0.tgz#bd76d6a23323e2ca8ffa12028dc04559c75f9019"
 
-vt-pbf@^3.1.1:
+vt-pbf@^3.1.0, vt-pbf@^3.1.1:
   version "3.1.1"
   resolved "https://registry.npm.taobao.org/vt-pbf/download/vt-pbf-3.1.1.tgz#b0f627e39a10ce91d943b898ed2363d21899fb82"
   integrity sha1-sPYn45oQzpHZQ7iY7SNj0hiZ+4I=
