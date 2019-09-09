@@ -1,7 +1,7 @@
 {
   "name": "viz-collection",
   "version": "1.0.0",
-  "description": "A plugin for maptalks plotty darw",
+  "description": "viz collection",
   "author": "sakitam-fdd <smilefdd@gmail.com>",
   "homepage": "https://github.com/sakitam-fdd/viz-collection.git",
   "private": false,
@@ -36,6 +36,7 @@
     "@babel/types": "^7.5.5",
     "@types/jest": "^24.0.18",
     "@types/node": "^10.12.18",
+    "@types/earcut": "^2.1.0",
     "@types/gl-matrix": "^2.4.5",
     "@types/storybook__react": "^4.0.2",
     "@storybook/react": "^5.2.0-alpha.44",
