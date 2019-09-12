@@ -1,13 +1,17 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { actions } from '@storybook/addon-actions';
 import PickerColor from './components/ImageGl/PickerColor';
 // @ts-ignore
 import * as PickerColorMd from './components/ImageGl/PickerColor.md';
-// import { action } from '@storybook/addon-actions';
+
+const eventsFromObject = actions({
+  logger: 'logger',
+});
 
 storiesOf('PickerColor', module)
   .add('index', () => (
-    <PickerColor />
+    <PickerColor {...eventsFromObject} />
   ), {
     notes: { markdown: PickerColorMd },
   });
