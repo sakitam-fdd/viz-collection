@@ -61,7 +61,7 @@ class VectorTile extends TileLayer {
       tolerance: 0.5, // simplification tolerance (higher means simpler)
       extent: 4096, // tile extent (both width and height)
       buffer: 64,   // tile buffer on each side
-      debug: 0,     // logging level (0 to disable, 1 or 2)
+      debug: 1,     // logging level (0 to disable, 1 or 2)
       lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
       promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
       generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
@@ -69,7 +69,16 @@ class VectorTile extends TileLayer {
     });
   }
 
-  getTileUrl() {}
+  getTileUrl(...args: any[]) {
+    // @ts-ignore
+    const { mode } = this.options;
+    if (mode === 'mvt') { // 矢量瓦片
+      return super.getTileUrl(...args);
+    }
+    if (mode === 'geojson-vt') { // 超大型 GeoJSON 分片加载渲染
+      return;
+    }
+  }
 
   /**
    * 获取瓦片大小
@@ -104,16 +113,16 @@ class VectorTile extends TileLayer {
 
           for (let j = 0, len = item.length; j < len; j++) {
             const el = item[j];
-            point.push(map.containerPointToCoordinate(containerPoint.add(new Point([el.x, el.y]).div(scale))));
+            point.push(map.containerPointToCoordinate(containerPoint.add(new Point([el.x, el.y])._div(scale))));
           }
 
           tilePoints.push(point);
         } else {
-          tilePoints.push(map.containerPointToCoordinate(containerPoint.add(new Point([item.x, item.y]).div(scale))));
+          tilePoints.push(map.containerPointToCoordinate(containerPoint.add(new Point([item.x, item.y])._div(scale))));
         }
       }
     } else if (geom.x && geom.y) {
-      tilePoints.push(map.containerPointToCoordinate(containerPoint.add(new Point([geom.x, geom.y]).div(scale))));
+      tilePoints.push(map.containerPointToCoordinate(containerPoint.add(new Point([geom.x, geom.y])._div(scale))));
     }
 
     if (type === 'Polygon') {
@@ -145,13 +154,16 @@ class VectorTile extends TileLayer {
 
             for (let j = 0, len = item.length; j < len; j++) {
               const el = item[j];
-              point.push(map.containerPointToCoordinate(containerPoint.add(new Point([el[0], el[1]]).div(scale))));
+              point.push(map.containerPointToCoordinate(
+                containerPoint.add(new Point([el[0], el[1]])._div(scale)),
+              ));
             }
 
             tilePoints.push(point);
           } else {
-            // tslint:disable-next-line:max-line-length
-            tilePoints.push(map.containerPointToCoordinate(containerPoint.add(new Point([item[0], item[1]]).div(scale))));
+            tilePoints.push(map.containerPointToCoordinate(
+              containerPoint.add(new Point([item[0], item[1]])._div(scale)),
+            ));
           }
         }
       }
@@ -175,7 +187,9 @@ class VectorTile extends TileLayer {
                 const pt = el[k];
                 sec.push(
                   map.containerPointToCoordinate(
-                    containerPoint.add(new Point([pt[0], pt[1]]).div(scale))));
+                    containerPoint.add(new Point([pt[0], pt[1]])._div(scale)),
+                  ),
+                );
               }
 
               point.push(sec);
@@ -183,8 +197,9 @@ class VectorTile extends TileLayer {
 
             tilePoints.push(point);
           } else {
-            // tslint:disable-next-line:max-line-length
-            tilePoints.push(map.containerPointToCoordinate(containerPoint.add(new Point([item[0], item[1]]).div(scale))));
+            tilePoints.push(map.containerPointToCoordinate(
+              containerPoint.add(new Point([item[0], item[1]])._div(scale))),
+            );
           }
         }
       }
@@ -233,7 +248,7 @@ class VectorTile extends TileLayer {
           i += 1;
         }
         layers.push(
-          new VectorLayer(layerName, geometries, {
+          new VectorLayer(layerName, geometries.filter(geo => !!geo), {
             style,
             enableSimplify: false,
             geometryEvents: false,

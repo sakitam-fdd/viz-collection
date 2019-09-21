@@ -33,12 +33,18 @@ class MaptalksVectorTile extends React.Component<PageProps, PageState> {
   initMap() {
     this.map = new Map(this.container.current, {
       center: [120.2, 30.2],
-      zoom: 5,
+      zoom: 2,
       pitch: 0,
       bearing: 0,
       minZoom: 0,
-      maxZoom: 24,
+      maxZoom: 18,
+      // spatialReference: {
+      //   projection: 'EPSG:4326',
+      // },
       baseLayer: new TileLayer('base', {
+        // spatialReference: {
+        //   projection: 'EPSG:3857',
+        // },
         // tslint:disable-next-line:max-line-length
         urlTemplate: 'https://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{z}/{y}/{x}',
         // urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
@@ -46,8 +52,26 @@ class MaptalksVectorTile extends React.Component<PageProps, PageState> {
       }),
     });
 
+    const layer = new VectorTile('mvt', null, {
+      mode: 'mvt',
+      enableSimplify: false,
+      urlTemplate: 'https://{s}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q',
+      subdomains: ['a', 'b', 'c', 'd'],
+      style: {
+        symbol: {
+          lineColor : '#34495e',
+          lineWidth : 0,
+          polygonFill : '#dc391c',
+          polygonOpacity : 0.5,
+        },
+      },
+    });
+
+    this.map.addLayer(layer);
+
     // TODO: 路径必须是完整地址
-    this.initWorker('http://localhost:3003/data/201908252200.tif');
+    // this.initWorker('http://localhost:3003/data/201908252200.tif');
+    this.loadJson();
   }
 
   componentDidMount() {
@@ -93,6 +117,26 @@ class MaptalksVectorTile extends React.Component<PageProps, PageState> {
       });
       this.map.addLayer(layer);
     }
+  }
+
+  loadJson() {
+    fetch('./json/Polygon.json')
+      .then(res => res.json())
+      .then((data: any) => {
+        const layer = new VectorTile('geojson', data, {
+          mode: 'geojson-vt',
+          enableSimplify: false,
+          style: {
+            symbol: {
+              lineColor : '#34495e',
+              lineWidth : 0,
+              polygonFill : '#dc391c',
+              polygonOpacity : 0.5,
+            },
+          },
+        });
+        this.map.addLayer(layer);
+      });
   }
 
   componentWillReceiveProps() {}

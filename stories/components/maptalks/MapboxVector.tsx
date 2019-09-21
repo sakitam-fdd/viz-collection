@@ -2,9 +2,9 @@ import 'maptalks/dist/maptalks.css';
 import * as React from 'react';
 // @ts-ignore
 import { Map, TileLayer } from 'maptalks';
+import '@maptalks/vt.basic';
 // @ts-ignore
 import { MapboxVectorTileLayer, GeoJSONVectorTileLayer } from '@maptalks/vt';
-import '@maptalks/vt.basic';
 import { values, colors } from '../../utils/common';
 // @ts-ignore
 import TiffDecode from '../../worker/tiffDecode.worker';
