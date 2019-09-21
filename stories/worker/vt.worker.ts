@@ -1,4 +1,6 @@
 // @ts-ignore
+import get from 'lodash-es/get';
+// @ts-ignore
 import geojsonvt from 'geojson-vt';
 // @ts-ignore
 import * as GeoTIFF from 'geotiff/dist/geotiff.bundle.min.js';
@@ -59,6 +61,56 @@ ctx.addEventListener('message', async ({ data: payload }) => {
       tile,
       type: action,
       data: featureString,
+      status: 'success',
+    });
+  } else if (action === 'GeoJSON') {
+    const res =  await ajax(url, {
+      methods: 'get',
+      responseType: 'json',
+    });
+
+    const data: any[] = res.data;
+
+    const features: any = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+    console.time('start');
+
+    for (let i = 0, len = data.length; i < len; i++) {
+      const item = data[i] || {};
+      if (item.geom && item.geom.indexOf('coordinates') > -1) {
+        const geom = JSON.parse(item.geom);
+        const area = get(item, 'area', {});
+        const feature: any = {
+          type: 'Feature',
+          properties: {
+            id: item.id,
+            name: item.name,
+            pId: item.pId,
+          },
+          geometry: {
+            // type: geom.geometry.type,
+            // coordinates: geom.geometry.coordinates,
+            type: geom.type,
+            coordinates: geom.coordinates,
+          },
+        };
+        // FIXME: 将作物 id 和对应颜色对应到属性中
+        Object.keys(area).map((key: string | number) => {
+          const color = get(area, `${key}.color`, '[255, 255, 255, 0]');
+          const parseColor = JSON.parse(color) || [255, 255, 255, 0];
+          feature.properties[key] = `rgba(${parseColor.join(',')})`;
+        });
+        features.features.push(feature);
+      }
+    }
+
+    console.timeEnd('start');
+
+    ctx.postMessage({
+      type: action,
+      data: features,
       status: 'success',
     });
   }

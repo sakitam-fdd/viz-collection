@@ -12,7 +12,7 @@ import { Tile as TileLayer, VectorTile as VectorTileLayer } from 'ol/layer';
 // @ts-ignore
 import { XYZ, VectorTile as VectorTileSource } from 'ol/source';
 // @ts-ignore
-import { Fill, Style } from 'ol/style';
+import { Fill, Style, Stroke } from 'ol/style';
 import { values, colors, replacer } from '../../utils/common';
 // @ts-ignore
 import Vt from '../../worker/vt.worker';
@@ -63,7 +63,8 @@ class Openlayers extends React.Component<PageProps, PageState> {
       ],
     });
 
-    this.initWorker('http://localhost:3003/data/201908252200.tif');
+    // this.initWorker('http://localhost:3003/data/201908252200.tif', 'getData');
+    this.initWorker('http://localhost:3003/json/chinaRegions.json', 'GeoJSON');
   }
 
   componentDidMount() {
@@ -72,14 +73,14 @@ class Openlayers extends React.Component<PageProps, PageState> {
     }
   }
 
-  initWorker(url: string) {
+  initWorker(url: string, type: string) {
     this.worker = new Vt();
 
     if (this.worker) {
       this.worker.addEventListener('message', this.onMessage);
       this.worker.postMessage({
         url,
-        action: 'getData',
+        action: type,
       });
     }
   }
@@ -131,6 +132,43 @@ class Openlayers extends React.Component<PageProps, PageState> {
             }),
           });
         },
+      });
+      this.map.addLayer(layer);
+    } else if (type === 'GeoJSON' && status === 'success') {
+      tileIndex = geojsonvt(payload.data, {
+        extent: 4096,
+        debug: 1,
+      });
+      const layer = new VectorTileLayer({
+        source: new VectorTileSource({
+          format: new GeoJSON(),
+          tileLoadFunction: (tile: any) => {
+            const format = tile.getFormat();
+            const tileCoord = tile.getTileCoord();
+            const tileData = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
+            const featureString = JSON.stringify({
+              type: 'FeatureCollection',
+              features: tileData ? tileData.features : [],
+            }, replacer);
+            const features = format.readFeatures(featureString);
+            tile.setLoader(() => {
+              tile.setFeatures(features);
+              tile.setProjection(tilePixels);
+            });
+          },
+          url: 'data:', // arbitrary url, we don't use it in the tileLoadFunction
+          wrapX: false,
+        }),
+        style: new Style({
+          stroke: new Stroke({
+            color: '#ef6a00',
+            lineDash: [4],
+            width: 1.5,
+          }),
+          // fill: new Fill({
+          //   color: '#ef6a00',
+          // }),
+        }),
       });
       this.map.addLayer(layer);
     } else if (type === 'create-vt') {

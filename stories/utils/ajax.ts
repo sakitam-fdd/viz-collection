@@ -1,7 +1,7 @@
 export function ajax(url: string, options: {
   methods: string;
   responseType: XMLHttpRequestResponseType;
-}) {
+}): any {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.responseType = options.responseType || 'json';
