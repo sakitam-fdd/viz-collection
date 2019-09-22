@@ -7238,9 +7238,9 @@ pkg-up@2.0.0:
   dependencies:
     find-up "^2.1.0"
 
-plotty@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.npm.taobao.org/plotty/download/plotty-0.4.0.tgz#261c8ab7b1dc09381c3bf83d498bcc4be447ee95"
+plotty@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.npm.taobao.org/plotty/download/plotty-0.4.1.tgz#5eda389c57f06b3d2fee15dca7b39a2e97a8bee2"
 
 pn@^1.1.0:
   version "1.1.0"
@@ -9025,6 +9025,10 @@ threads@^1.0.0-beta.3:
     zen-observable "^0.8.14"
   optionalDependencies:
     tiny-worker ">= 2"
+
+three-orbitcontrols@2.108.1:
+  version "2.108.1"
+  resolved "https://registry.npm.taobao.org/three-orbitcontrols/download/three-orbitcontrols-2.108.1.tgz#3b7877390ee5cde151805646064de3c0be313474"
 
 three@^0.97.0:
   version "0.97.0"
