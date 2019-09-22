@@ -1,14 +1,86 @@
 // @ts-ignore
 import { renderer } from 'maptalks';
+import { isArrayHasData } from '@/utils/common';
+// @ts-ignore
+import TiffWorker from './tiff.worker';
 
 const { ImageLayerCanvasRenderer, ImageGLRenderable } = renderer;
 
 // @ts-ignore
 const EMPTY_ARRAY: any[] = [];
 
+class ResourceCache {
+  private _errors: any;
+  private resources: any;
+  constructor() {
+    this.resources = {};
+    this._errors = {};
+  }
+
+  addResource(url: string[], img: ImageData) {
+    this.resources[url[0]] = {
+      image: img,
+      width: +url[1],
+      height: +url[2],
+    };
+  }
+
+  isResourceLoaded(url: string[] | string) {
+    if (!url) {
+      return false;
+    }
+    const imgUrl = this.getImgUrl(url);
+    if (this._errors[imgUrl]) {
+      return true;
+    }
+    return this.resources[imgUrl];
+  }
+
+  getImage(url: string[] | string) {
+    const imgUrl = this.getImgUrl(url);
+    if (!this.isResourceLoaded(url) || this._errors[imgUrl]) {
+      return null;
+    }
+    return this.resources[imgUrl].image;
+  }
+
+  markErrorResource(url: string[] | string) {
+    this._errors[this.getImgUrl(url)] = 1;
+  }
+
+  merge(res: any) {
+    if (!res) return this;
+    for (const p in res.resources) {
+      const img = res.resources[p];
+      this.addResource([p, img.width, img.height], img.image);
+    }
+    return this;
+  }
+
+  forEach(fn: (...args: any[]) => any) {
+    if (!this.resources) {
+      return this;
+    }
+    for (const p in this.resources) {
+      if (this.resources.hasOwnProperty(p)) {
+        fn(p, this.resources[p]);
+      }
+    }
+    return this;
+  }
+
+  getImgUrl(url: string[] | string) {
+    if (!Array.isArray(url)) {
+      return url;
+    }
+    return url[0];
+  }
+}
+
 // @ts-ignore
 // @ts-ignore
 export class PlottyLayerCanvasRenderer extends ImageLayerCanvasRenderer {
+  private worker: Worker | undefined;
   isDrawable() {
     if (this.getMap().getPitch()) {
       if (console) {
@@ -19,36 +91,61 @@ export class PlottyLayerCanvasRenderer extends ImageLayerCanvasRenderer {
     return true;
   }
 
-  checkResources() {}
+  checkResources() {
+    if (this._imageLoaded) {
+      return EMPTY_ARRAY;
+    }
+    const layer = this.layer;
+    let urls = layer._imageData.map((img: { url: any; }) => [img.url, null, null]);
+    if (this.resources) {
+      const unloaded: any[] | never[] = [];
+      const resources = new ResourceCache();
+      urls.forEach((url: any) => {
+        if (this.resources.isResourceLoaded(url)) {
+          const img = this.resources.getImage(url);
+          resources.addResource(url, img);
+        } else {
+          // @ts-ignore
+          unloaded.push(url);
+        }
+      });
+      this.resources.forEach((url: any, res: { image: any; }) => {
+        if (!resources.isResourceLoaded(url)) {
+          // @ts-ignore
+          this.retireImage(res.image);
+        }
+      });
+      // @ts-ignore
+      this.resources = resources;
+      urls = unloaded;
+    }
+    // @ts-ignore
+    this._imageLoaded = true;
+    return urls;
+  }
 
-  // checkResources() {
-  //   if (this._imageLoaded) {
-  //     return EMPTY_ARRAY;
-  //   }
-  //   const layer = this.layer;
-  //   let urls = layer._imageData.map(img => [img.url, null, null]);
-  //   if (this.resources) {
-  //     const unloaded = [];
-  //     const resources = new ResourceCache();
-  //     urls.forEach(url => {
-  //       if (this.resources.isResourceLoaded(url)) {
-  //         const img = this.resources.getImage(url);
-  //         resources.addResource(url, img);
-  //       } else {
-  //         unloaded.push(url);
-  //       }
-  //     });
-  //     this.resources.forEach((url, res) => {
-  //       if (!resources.isResourceLoaded(url)) {
-  //         this.retireImage(res.image);
-  //       }
-  //     });
-  //     this.resources = resources;
-  //     urls = unloaded;
-  //   }
-  //   this._imageLoaded = true;
-  //   return urls;
-  // }
+  loadResources(resourceUrls: any) {
+    if (!this.resources) {
+      // @ts-ignore
+      this.resources = new ResourceCache();
+    }
+    const resources = this.resources;
+    const promises = [];
+    if (isArrayHasData(resourceUrls)) {
+      const cache = {};
+      for (let i = resourceUrls.length - 1; i >= 0; i--) {
+        const url = resourceUrls[i];
+        if (!url || !url.length || cache[url.join('-')]) {
+          continue;
+        }
+        cache[url.join('-')] = 1;
+        if (!resources.isResourceLoaded(url, true)) {
+          promises.push(new Promise(this._promiseResource(url)));
+        }
+      }
+    }
+    return Promise.all(promises);
+  }
 
   retireImage(/* image */) {
 
@@ -135,6 +232,45 @@ export class PlottyLayerCanvasRenderer extends ImageLayerCanvasRenderer {
 
   drawOnInteracting() {
     this.draw();
+  }
+
+  onMessage({ data: payload }: any) {
+    // @ts-ignore
+    this._loadingResource = false;
+    if (this.layer) {
+      this.layer.fire('resourceload', payload);
+      this.setToRedraw();
+    }
+  }
+
+  render(framestamp: number) {
+    this.prepareRender();
+    if (!this.getMap() || !this.layer.isVisible()) {
+      return;
+    }
+
+    if (!this.worker) {
+      this.worker = new TiffWorker();
+
+      if (!this.worker) return;
+      this.worker.addEventListener('message', this.onMessage);
+    }
+    if (!this.resources) {
+      // @ts-ignore
+      this.resources = new ResourceCache();
+    }
+    if (this.checkResources) {
+      const resources = this.checkResources();
+      if (resources.length > 0) {
+        // @ts-ignore
+        this._loadingResource = true;
+        this.worker.postMessage(resources);
+      } else {
+        this._tryToDraw(framestamp);
+      }
+    } else {
+      this._tryToDraw(framestamp);
+    }
   }
 
   getMap() {

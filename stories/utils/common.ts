@@ -254,8 +254,17 @@ const replacer = function (_key: string, value: any) {
   return value;
 };
 
+/**
+ * check array has data
+ * @param obj
+ */
+function isArrayHasData(obj: any) {
+  return Array.isArray(obj) && obj.length > 0;
+}
+
 export {
   values,
   colors,
   replacer,
+  isArrayHasData,
 };

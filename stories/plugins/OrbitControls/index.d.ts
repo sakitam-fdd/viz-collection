@@ -42,7 +42,6 @@
 
 // 	autoRotate: boolean;
 // 	autoRotateSpeed: number;
-
 // 	enableKeys: boolean;
 // 	keys: { LEFT: number; UP: number; RIGHT: number; BOTTOM: number; };
 // 	mouseButtons: { LEFT: MOUSE; MIDDLE: MOUSE; RIGHT: MOUSE; };
