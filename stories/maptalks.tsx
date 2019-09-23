@@ -1,6 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import Maptalks from './components/maptalks';
+import GeoJSONVT from './components/maptalks/GeoJSONVT';
 import ThreePolygon from './components/maptalks/ThreePolygon';
 import MapboxVector from './components/maptalks/MapboxVector';
 import MaptalksVectorTile from './components/maptalks/vectorTile';
@@ -16,6 +17,9 @@ storiesOf('maptalks', module)
   })
   .add('mapbox-vector', () => (
     <MapboxVector />
+  ))
+  .add('geojson-vt', () => (
+    <GeoJSONVT />
   ))
   .add('vector', () => (
     <MaptalksVectorTile />

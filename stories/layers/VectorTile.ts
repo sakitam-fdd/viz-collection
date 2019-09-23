@@ -57,15 +57,15 @@ class VectorTile extends TileLayer {
 
   initialize(data: any) {
     this.vt = GeoJSONVt(data, {
-      maxZoom: 16,  // max zoom to preserve detail on; can't be higher than 24
-      tolerance: 0.5, // simplification tolerance (higher means simpler)
+      // maxZoom: 16,  // max zoom to preserve detail on; can't be higher than 24
+      // tolerance: 0.5, // simplification tolerance (higher means simpler)
       extent: 4096, // tile extent (both width and height)
-      buffer: 64,   // tile buffer on each side
-      debug: 1,     // logging level (0 to disable, 1 or 2)
-      lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
-      promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
-      generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
-      indexMaxZoom: 5,
+      // buffer: 64,   // tile buffer on each side
+      // debug: 1,     // logging level (0 to disable, 1 or 2)
+      // lineMetrics: false, // whether to enable line metrics tracking for LineString/MultiLineString features
+      // promoteId: null,    // name of a feature property to promote to feature.id. Cannot be used with `generateId`
+      // generateId: false,  // whether to generate feature ids. Cannot be used with `promoteId`
+      // indexMaxZoom: 5,
     });
   }
 
@@ -99,7 +99,7 @@ class VectorTile extends TileLayer {
    * @param containerPoint
    * @param layerName
    */
-  loadGeometryForMVT(feature: any, scale: number, containerPoint: any, layerName: string | number) {
+  loadGeometryForMVT(feature: any, scale: number[], containerPoint: any, layerName: string | number) {
     const geom = feature.loadGeometry();
     const type = VectorTileFeature.types[feature.type];
 
@@ -113,16 +113,22 @@ class VectorTile extends TileLayer {
 
           for (let j = 0, len = item.length; j < len; j++) {
             const el = item[j];
-            point.push(map.containerPointToCoordinate(containerPoint.add(new Point([el.x, el.y])._div(scale))));
+            point.push(
+              map.containerPointToCoordinate(containerPoint.add(new Point([el.x * scale[0], el.y * scale[1]]))),
+            );
           }
 
           tilePoints.push(point);
         } else {
-          tilePoints.push(map.containerPointToCoordinate(containerPoint.add(new Point([item.x, item.y])._div(scale))));
+          tilePoints.push(
+            map.containerPointToCoordinate(containerPoint.add(new Point([item.x * scale[0], item.y * scale[1]]))),
+          );
         }
       }
     } else if (geom.x && geom.y) {
-      tilePoints.push(map.containerPointToCoordinate(containerPoint.add(new Point([geom.x, geom.y])._div(scale))));
+      tilePoints.push(
+        map.containerPointToCoordinate(containerPoint.add(new Point([geom.x * scale[0], geom.y * scale[1]]))),
+      );
     }
 
     if (type === 'Polygon') {
@@ -140,7 +146,7 @@ class VectorTile extends TileLayer {
    * @param scale
    * @param containerPoint
    */
-  loadGeometryForGVT(feature: any, scale: number, containerPoint: any) {
+  loadGeometryForGVT(feature: any, scale: number[], containerPoint: any) {
     const geom = feature.geometry.coordinates;
     const type = feature.geometry.type;
     const map = this.getMap();
@@ -155,14 +161,14 @@ class VectorTile extends TileLayer {
             for (let j = 0, len = item.length; j < len; j++) {
               const el = item[j];
               point.push(map.containerPointToCoordinate(
-                containerPoint.add(new Point([el[0], el[1]])._div(scale)),
+                containerPoint.add(new Point([el[0] * scale[0], el[1] * scale[1]])),
               ));
             }
 
             tilePoints.push(point);
           } else {
             tilePoints.push(map.containerPointToCoordinate(
-              containerPoint.add(new Point([item[0], item[1]])._div(scale)),
+              containerPoint.add(new Point([item[0] * scale[0], item[1] * scale[1]])),
             ));
           }
         }
@@ -187,7 +193,7 @@ class VectorTile extends TileLayer {
                 const pt = el[k];
                 sec.push(
                   map.containerPointToCoordinate(
-                    containerPoint.add(new Point([pt[0], pt[1]])._div(scale)),
+                    containerPoint.add(new Point([pt[0] * scale[0], pt[1] * scale[1]])),
                   ),
                 );
               }
@@ -198,7 +204,7 @@ class VectorTile extends TileLayer {
             tilePoints.push(point);
           } else {
             tilePoints.push(map.containerPointToCoordinate(
-              containerPoint.add(new Point([item[0], item[1]])._div(scale))),
+              containerPoint.add(new Point([item[0] * scale[0], item[1] * scale[1]]))),
             );
           }
         }
@@ -222,7 +228,7 @@ class VectorTile extends TileLayer {
     const { style } = this.options;
     load(tile.url).then((buffer) => {
       const data = new Tile(new Pbf(buffer));
-      const size = this.getTileSize();
+      const size = [tileCanvas.width, tileCanvas.height];
       const layers: any[] = [];
       let loaded = 0;
       function onLayerLoaded() {
@@ -239,7 +245,10 @@ class VectorTile extends TileLayer {
         while (i !== tileLayer.length) {
           const geometry = this.loadGeometryForMVT(
             tileLayer.feature(i),
-            tileLayer.extent / size.width,
+            [
+              size[0] / tileLayer.extent,
+              size[1] / tileLayer.extent,
+            ],
             containerPoint,
             layerName,
           );
@@ -269,6 +278,7 @@ class VectorTile extends TileLayer {
     const { style } = this.options;
     const { z, x, y } = tile;
     const data = this.vt.getTile(z, x, y);
+    const extent = data.extent || 4096;
 
     const featureString = JSON.stringify({
       type: 'FeatureCollection',
@@ -277,7 +287,7 @@ class VectorTile extends TileLayer {
 
     const collection = JSON.parse(featureString);
 
-    const size = this.getTileSize();
+    const size = [tileCanvas.width, tileCanvas.height];
     const layers: any[] = [];
     let loaded = 0;
     function onLayerLoaded() {
@@ -292,7 +302,10 @@ class VectorTile extends TileLayer {
     while (i !== collection.features.length) {
       const geometry = this.loadGeometryForGVT(
         collection.features[i],
-        4096 / size.width,
+        [
+          size[0] / extent,
+          size[1] / extent,
+        ],
         containerPoint,
       );
       geometries.push(geometry);
