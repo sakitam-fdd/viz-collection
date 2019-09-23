@@ -5,7 +5,7 @@ import { Map, TileLayer } from 'maptalks';
 import { values, colors } from '../../utils/common';
 // @ts-ignore
 import TiffDecode from '../../worker/tiffDecode.worker';
-import VectorTile from '../../layers/VectorTile';
+import GeoJSONTileLayer from '../../layers/GeoJSONLayer';
 
 export interface PageProps {}
 
@@ -52,26 +52,9 @@ class GeoJSONVT extends React.Component<PageProps, PageState> {
       }),
     });
 
-    const layer = new VectorTile('mvt', null, {
-      mode: 'mvt',
-      enableSimplify: false,
-      urlTemplate: 'https://{s}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/{z}/{x}/{y}.vector.pbf?access_token=pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2pzbmg0Nmk5MGF5NzQzbzRnbDNoeHJrbiJ9.7_-_gL8ur7ZtEiNwRfCy7Q',
-      subdomains: ['a', 'b', 'c', 'd'],
-      style: {
-        symbol: {
-          lineColor : '#34495e',
-          lineWidth : 0,
-          polygonFill : '#dc391c',
-          polygonOpacity : 0.5,
-        },
-      },
-    });
-
-    this.map.addLayer(layer);
-
     // TODO: 路径必须是完整地址
-    // this.initWorker('http://localhost:3003/data/201908252200.tif');
-    this.loadJson();
+    this.initWorker('http://localhost:3003/data/201908252200.tif');
+    // this.loadJson();
   }
 
   componentDidMount() {
@@ -100,7 +83,7 @@ class GeoJSONVT extends React.Component<PageProps, PageState> {
       filters.push(colors[idx]);
     });
     if (status === 'success') {
-      const layer = new VectorTile('2', data, {
+      const layer = new GeoJSONTileLayer('2', data, {
         mode: 'geojson-vt',
         enableSimplify: true,
         style: [
@@ -123,7 +106,7 @@ class GeoJSONVT extends React.Component<PageProps, PageState> {
     fetch('./json/Polygon.json')
       .then(res => res.json())
       .then((data: any) => {
-        const layer = new VectorTile('geojson', data, {
+        const layer = new GeoJSONTileLayer('geojson', data, {
           mode: 'geojson-vt',
           enableSimplify: false,
           style: {

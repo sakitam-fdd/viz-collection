@@ -1,6 +1,8 @@
-import isNumber from 'lodash-es/isNumber';
+import { isNumber } from 'lodash-es';
+// @ts-ignore
 import { TileLayer, Size } from 'maptalks';
 import { CanvasRenderer, GLRenderer } from './renderer/GeoJSONLayer';
+// @ts-ignore
 import TileWorker from '../worker/tile.worker';
 
 class GeoJSONTileLayer extends TileLayer {
@@ -61,7 +63,7 @@ class GeoJSONTileLayer extends TileLayer {
     this.worker = new TileWorker();
 
     const options = {};
-    Object.keys(this.options).forEach(key => {
+    Object.keys(this.options).forEach((key: string | number) => {
       if (
         key !== 'rendererFactory' &&
         key !== 'styles' &&
@@ -87,7 +89,7 @@ class GeoJSONTileLayer extends TileLayer {
     return new Size(size);
   }
 
-  getVectorTilePromise(coords: any) {
+  getVectorTilePromise(coords: any, extent?: number[]) {
     // @ts-ignore
     const that = this;
 
@@ -99,7 +101,7 @@ class GeoJSONTileLayer extends TileLayer {
           m.data.coords.y === coords.y &&
           m.data.coords.z === coords.z
         ) {
-          resolve(m.data);
+          resolve(m.data, extent);
           that.worker && that.worker.removeEventListener('message', recv);
         }
       });
@@ -111,7 +113,7 @@ class GeoJSONTileLayer extends TileLayer {
   }
 
   // eslint-disable-next-line no-unused-vars
-  drawTile(canvas, tileContext, onComplete) {
+  drawTile(canvas: HTMLCanvasElement, tileContext: any, onComplete: (...args: any[]) => any) {
     const extent = tileContext.extent;
     const s = this.getTileSize().toArray();
     const map = this.getMap();
@@ -131,9 +133,9 @@ class GeoJSONTileLayer extends TileLayer {
       extent.ymax,
     ]);
 
-    vectorTilePromise.then(vectorTile => {
+    vectorTilePromise.then((vectorTile: any) => {
       if (vectorTile.layers && vectorTile.layers.length !== 0) {
-        Object.keys(vectorTile.layers).forEach(key => {
+        Object.keys(vectorTile.layers).forEach((key: string) => {
           const layer = vectorTile.layers[key];
           // FIXME: https://github.com/Leaflet/Leaflet/blob/master/src/geometry/Point.js#L78
           const ext = layer.extent || 4096;
@@ -148,11 +150,12 @@ class GeoJSONTileLayer extends TileLayer {
   /**
    * re render
    */
-  renderShape(canvas, features, scale) {
-    const context = canvas.getContext('2d');
+  renderShape(canvas: HTMLCanvasElement, features: any, scale: number[]) {
+    // @ts-ignore
+    const context: CanvasRenderingContext2D = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.save();
-    Object.keys(this._style).forEach(key => {
+    Object.keys(this._style).forEach((key: string) => {
       context[key] = this._style[key];
     });
 
@@ -167,7 +170,7 @@ class GeoJSONTileLayer extends TileLayer {
       }
       const type = item.geometry.type;
       context.beginPath();
-      this._drawInternal(context, item, scale);
+      this.drawInternal(context, item, scale);
       if (type === 'Point' || type === 'Polygon' || type === 'MultiPolygon') {
         context.fill();
         context.stroke();
@@ -189,7 +192,7 @@ class GeoJSONTileLayer extends TileLayer {
    * @param scale
    * @private
    */
-  _drawInternal(context, data, scale) {
+  drawInternal(context: CanvasRenderingContext2D, data: any, scale: number[]) {
     const type = data.geometry.type;
     const coordinates = data.geometry.coordinates;
     let pixel = [];
@@ -213,12 +216,12 @@ class GeoJSONTileLayer extends TileLayer {
         }
         break;
       case 'Polygon':
-        this._drawPolygon(context, coordinates, scale);
+        this.drawPolygon(context, coordinates, scale);
         break;
       case 'MultiPolygon':
         for (let i = 0; i < coordinates.length; i++) {
           const polygon = coordinates[i];
-          this._drawPolygon(context, polygon, scale);
+          this.drawPolygon(context, polygon, scale);
         }
         context.closePath();
         break;
@@ -235,8 +238,11 @@ class GeoJSONTileLayer extends TileLayer {
    * @param scale
    * @private
    */
-  _drawPolygon(context, coordinates, scale) {
-    let [pixel, pixel_] = [];
+  drawPolygon(context: CanvasRenderingContext2D, coordinates: any[], scale: number[]) {
+    // tslint:disable-next-line:variable-name
+    let pixel;
+    // tslint:disable-next-line:variable-name
+    let pixel_;
     for (let i = 0; i < coordinates.length; i++) {
       const coordinate = coordinates[i];
       pixel = [coordinate[0] * scale[0], coordinate[1] * scale[1]];
@@ -257,6 +263,18 @@ class GeoJSONTileLayer extends TileLayer {
     super.onRemove();
   }
 
+  config(...args: any[]) {
+    return super.config(...args);
+  }
+
+  getId() {
+    return super.getId();
+  }
+
+  getMap() {
+    return super.getMap();
+  }
+
   toJSON() {
     return {
       type: 'GeoJSONTileLayer',
@@ -265,7 +283,7 @@ class GeoJSONTileLayer extends TileLayer {
     };
   }
 
-  static fromJSON(layerJSON) {
+  static fromJSON(layerJSON: any) {
     if (!layerJSON || layerJSON.type !== 'VectorTileLayer') {
       return null;
     }
@@ -273,7 +291,9 @@ class GeoJSONTileLayer extends TileLayer {
   }
 }
 
+// @ts-ignore
 GeoJSONTileLayer.registerRenderer('canvas', CanvasRenderer);
+// @ts-ignore
 GeoJSONTileLayer.registerRenderer('gl', GLRenderer);
 
 export default GeoJSONTileLayer;
