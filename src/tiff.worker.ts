@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as GeoTIFF from 'geotiff/dist/geotiff.bundle.min.js';
-import { ajax } from '@/utils/ajax';
+import { ajax } from '../stories/utils/ajax';
 
 const ctx: Worker = self as any;
 
@@ -18,7 +18,11 @@ ctx.addEventListener('message', async ({ data: payload }) => {
       const image = await tiff.getImage();
       const imageData = await image.readRasters(); // 273.15
 
-      datas.push(imageData);
+      datas.push({
+        data: imageData[0],
+        width: image.getWidth(),
+        height: image.getHeight(),
+      });
     }
   }
 

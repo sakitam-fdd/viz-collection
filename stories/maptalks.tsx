@@ -1,5 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import Plotty from './components/maptalks/Plotty';
 import Maptalks from './components/maptalks';
 import GeoJSONVT from './components/maptalks/GeoJSONVT';
 import ThreePolygon from './components/maptalks/ThreePolygon';
@@ -28,6 +29,11 @@ storiesOf('maptalks', module)
   })
   .add('three', () => (
     <ThreePolygon />
+  ), {
+    notes: { markdown: markdownNotes },
+  })
+  .add('plotty', () => (
+    <Plotty />
   ), {
     notes: { markdown: markdownNotes },
   });

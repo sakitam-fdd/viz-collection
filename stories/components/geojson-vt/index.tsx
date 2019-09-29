@@ -71,7 +71,7 @@ class Openlayers extends React.Component<PageProps, PageState> {
     });
 
     // this.initWorker('http://localhost:3003/data/201908252200.tif', 'getData');
-    this.initWorker('http://localhost:3003/json/chinaRegions.json', 'GeoJSON');
+    this.initWorker('http://localhost:3003/json/5.json', 'GeoJSON');
   }
 
   componentDidMount() {

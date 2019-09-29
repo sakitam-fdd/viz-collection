@@ -1,6 +1,11 @@
 // @ts-ignore
 import { Layer, Extent } from 'maptalks';
 
+import {
+  PlottyLayerCanvasRenderer,
+  PlottyLayerGLRenderer,
+} from './renderer';
+
 const _options = {
   doubleBuffer: false,
   glOptions: {
@@ -13,11 +18,17 @@ const _options = {
   },
 };
 
+interface TiffItem {
+  url: string;
+  extent: number[];
+  opacity?: number;
+}
+
 class Plotty extends Layer {
-  private _images: any[];
-  // @ts-ignore
+  private _images: TiffItem[] | TiffItem;
   private _imageData: any[] | undefined;
-  constructor(id: string | number | symbol, tiff: any[], options: any) {
+
+  constructor(id: string | number | symbol, tiff: TiffItem[] | TiffItem, options: any) {
     // if (tiff && !Array.isArray(tiff) && !tiff.url) {
     //   options = tiff;
     // }
@@ -79,7 +90,8 @@ class Plotty extends Layer {
 }
 
 // @ts-ignore
-// Plotty.registerRenderer('webgl', Renderer);
+Plotty.registerRenderer('gl', PlottyLayerGLRenderer);
+Plotty.registerRenderer('canvas', PlottyLayerCanvasRenderer);
 
 export {
   Plotty,

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<script src="../node_modules/netcdfjs/dist/netcdfjs.js"></script>
+<script>
+  fetch('./vv10avg_201909100000_0000.nc')
+  .then(res => res.arrayBuffer())
+  .then(buffer => {
+    const reader = new netcdfjs(buffer);
+    const lat = reader.getDataVariable('lat');
+    console.log(lat);
+    const lon = reader.getDataVariable('lon');
+    console.log(lon);
+    const grib = reader.getDataVariable('vv10avg'); // go to offset and read it
+    console.log(grib);
+  });
+</script>
+</body>
+</html>

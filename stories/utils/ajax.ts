@@ -1,3 +1,26 @@
+const combineURL = (config: any) => {
+  let url = (config.url || '').trim();
+  let baseUrl = (config.baseURL || '').trim();
+  if (!url && !baseUrl) url = location.href;
+  if (url.indexOf('http') !== 0) {
+    const isAbsolute = /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+    if (!baseUrl) {
+      const arr = location.pathname.split('/');
+      arr.pop();
+      // tslint:disable-next-line:prefer-template
+      baseUrl = location.protocol + '//' + location.host + (isAbsolute ? baseUrl : arr.join('/'));
+    }
+    // tslint:disable-next-line:prefer-template
+    url = baseUrl.replace(/\/+$/, '') + '/' + url.replace(/^\/+/, '');
+    if (typeof document !== 'undefined') {
+      const a = document.createElement('a');
+      a.href = url;
+      url = a.href;
+    }
+  }
+  return url;
+};
+
 export function ajax(url: string, options: {
   methods: string;
   responseType: XMLHttpRequestResponseType;
@@ -14,7 +37,11 @@ export function ajax(url: string, options: {
       }
     };
 
-    xhr.open(options.methods, url, true);
+    const uri = combineURL({
+      url,
+    });
+
+    xhr.open(options.methods, uri, true);
     xhr.send();
   });
 }

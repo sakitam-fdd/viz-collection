@@ -1,6 +1,8 @@
 // @ts-ignore
 import { renderer } from 'maptalks';
-import { isArrayHasData } from '@/utils/common';
+// @ts-ignore
+import { plot } from 'plotty';
+import { isArrayHasData } from '../stories/utils/common';
 // @ts-ignore
 import TiffWorker from './tiff.worker';
 
@@ -81,6 +83,7 @@ class ResourceCache {
 // @ts-ignore
 export class PlottyLayerCanvasRenderer extends ImageLayerCanvasRenderer {
   private worker: Worker | undefined;
+  private plotty: plot;
   isDrawable() {
     if (this.getMap().getPitch()) {
       if (console) {
@@ -96,14 +99,12 @@ export class PlottyLayerCanvasRenderer extends ImageLayerCanvasRenderer {
       return EMPTY_ARRAY;
     }
     const layer = this.layer;
-    let urls = layer._imageData.map((img: { url: any; }) => [img.url, null, null]);
+    let urls = layer._imageData.map((img: { url: any; }) => img.url);
     if (this.resources) {
       const unloaded: any[] | never[] = [];
       const resources = new ResourceCache();
       urls.forEach((url: any) => {
         if (this.resources.isResourceLoaded(url)) {
-          const img = this.resources.getImage(url);
-          resources.addResource(url, img);
         } else {
           // @ts-ignore
           unloaded.push(url);
@@ -186,11 +187,11 @@ export class PlottyLayerCanvasRenderer extends ImageLayerCanvasRenderer {
       for (let i = 0; i < imgData.length; i++) {
         const extent = imgData[i].extent2d;
         // @ts-ignore
-        const image = this.resources && this.resources.getImage(imgData[i].url);
-        if (image && mapExtent.intersects(extent)) {
+        // const image = this.resources && this.resources.getImage(imgData[i].url);
+        if (this.plotty && mapExtent.intersects(extent)) {
           // @ts-ignore
           this._painted = true;
-          this._drawImage(image, extent, imgData[i].opacity || 1);
+          this._drawImage(this.plotty.gl.canvas, extent, imgData[i].opacity || 1);
         }
       }
     }
@@ -235,11 +236,25 @@ export class PlottyLayerCanvasRenderer extends ImageLayerCanvasRenderer {
   }
 
   onMessage({ data: payload }: any) {
+    console.log(payload, this.layer);
     // @ts-ignore
     this._loadingResource = false;
     if (this.layer) {
+      const first = payload.data[0];
+
+      // addColorScale("scale", colors, values);
+
+      this.plotty = new plot({
+        canvas: new OffscreenCanvas(first.width, first.height),
+        data: first.data,
+        width: first.width,
+        height: first.height,
+        domain: [-73.6137, 42.9801],
+        colorScale: 'rainbow',
+      });
       this.layer.fire('resourceload', payload);
       this.setToRedraw();
+      this.plotty.render();
     }
   }
 
@@ -253,12 +268,17 @@ export class PlottyLayerCanvasRenderer extends ImageLayerCanvasRenderer {
       this.worker = new TiffWorker();
 
       if (!this.worker) return;
-      this.worker.addEventListener('message', this.onMessage);
+      this.worker.addEventListener('message', this.onMessage.bind(this));
     }
     if (!this.resources) {
       // @ts-ignore
       this.resources = new ResourceCache();
     }
+
+    if (this.plotty) {
+      this.plotty.render();
+    }
+
     if (this.checkResources) {
       const resources = this.checkResources();
       if (resources.length > 0) {
