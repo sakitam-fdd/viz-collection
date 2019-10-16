@@ -79,6 +79,16 @@ module.exports = async ({ config, mode }) => {
     }
   );
 
+  config.module.rules.push(
+    {
+      test: /[\\/]?stories[\\/]components[\\/][\S]*?(\.tsx?)/,
+      loaders: [
+        require.resolve('@storybook/source-loader'),
+      ],
+      enforce: 'pre',
+    }
+  );
+
   config.plugins.push(
     new ForkTsCheckerWebpackPlugin({
       vue: true,

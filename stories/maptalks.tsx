@@ -6,6 +6,7 @@ import GeoJSONVT from './components/maptalks/GeoJSONVT';
 import ThreePolygon from './components/maptalks/ThreePolygon';
 import MapboxVector from './components/maptalks/MapboxVector';
 import MaptalksVectorTile from './components/maptalks/vectorTile';
+import CanvasImageReader from './components/image-reader/canvas-image-reader';
 // @ts-ignore
 import * as markdownNotes from './components/Button/index.md';
 // import { action } from '@storybook/addon-actions';
@@ -34,6 +35,11 @@ storiesOf('maptalks', module)
   })
   .add('plotty', () => (
     <Plotty />
+  ), {
+    notes: { markdown: markdownNotes },
+  })
+  .add('image-radar', () => (
+    <CanvasImageReader />
   ), {
     notes: { markdown: markdownNotes },
   });

@@ -106,7 +106,7 @@ class PickerColor extends React.Component<PageProps, PageState> {
   }
 
   initGl() {
-    if (this.canvas2.current) {
+    if (this.canvas2.current && this.gl) {
       this.onresize();
       this.gl = createContext(this.canvas2.current, {
         antialias: false,

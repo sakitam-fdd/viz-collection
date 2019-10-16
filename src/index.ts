@@ -26,6 +26,7 @@ interface TiffItem {
 
 class Plotty extends Layer {
   private _images: TiffItem[] | TiffItem;
+  // @ts-ignore
   private _imageData: any[] | undefined;
 
   constructor(id: string | number | symbol, tiff: TiffItem[] | TiffItem, options: any) {
@@ -60,7 +61,7 @@ class Plotty extends Layer {
   }
 
   // tslint:disable-next-line:function-name
-  _prepareImages(images: any[] = []) {
+  _prepareImages(images: TiffItem[] | TiffItem = []) {
     if (!Array.isArray(images)) {
       // tslint:disable-next-line:no-parameter-reassignment
       images = [images];

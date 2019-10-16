@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layer - ImageLayer: an example</title>
+<style type="text/css">
+  html, body {
+    margin: 0px;
+    height: 100%;
+    width: 100%
+  }
+
+  .container {
+    width: 100%;
+    height: 100%
+  }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.js"></script>
+<body>
+
+<div id="map" class="container"></div>
+
+<script>
+  var map = new maptalks.Map('map', {
+    center: [113.95449050367006, 37.76498196951863],
+    zoom: 4,
+    baseLayer: new maptalks.TileLayer('base', {
+      urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+      subdomains: ['a', 'b', 'c', 'd'],
+      attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+    })
+  });
+
+  var imageLayer = new maptalks.ImageLayer('images',
+    [
+      {
+        url: './data/201907021018_042_color.png',
+        extent: [66.68402763165123, 12.77002268658371, 143.5424729859214, 56.38334307775602],
+        opacity: 1
+      },
+    ], {
+      renderer: 'canvas',
+      // opacity: 0
+    });
+
+  map.addLayer(imageLayer);
+  let id = 0;
+
+  let ctx = imageLayer.getRenderer().context;
+  map.on('mousemove', event => {
+    if (!ctx) {
+      ctx = imageLayer.getRenderer().context;
+    }
+    console.time(id.toString());
+    const pixel = event.containerPoint;
+    const data = ctx.getImageData(pixel.x, pixel.y, 1, 1);
+    console.timeEnd(id.toString());
+    console.log(data.data);
+    id++;
+  });
+
+</script>
+</body>
+</html>
