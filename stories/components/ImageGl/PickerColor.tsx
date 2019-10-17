@@ -2,9 +2,9 @@ import '../../styles/picker.less';
 import * as React from 'react';
 import REGL from 'regl';
 import {
-  getDevicePixelRatio, loadImage,
   createContext,
 } from '../../utils/viz';
+import { getDevicePixelRatio, loadImage } from '../../utils/common';
 
 export interface PageProps {}
 

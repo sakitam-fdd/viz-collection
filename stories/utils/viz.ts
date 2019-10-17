@@ -43,25 +43,3 @@ export function createContext(canvas: HTMLCanvasElement, glOptions = {}): WebGLR
   }
   return null;
 }
-
-/**
- * 获取设备缩放比
- */
-export function getDevicePixelRatio() {
-  return window.devicePixelRatio || 1;
-}
-
-/**
- * load image
- * @param src
- */
-export function loadImage(src: string) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => {
-      resolve(image);
-    };
-    image.onerror = reject;
-    image.src = src;
-  });
-}

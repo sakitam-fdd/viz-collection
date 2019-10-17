@@ -5,7 +5,6 @@ import * as THREE from 'three';
 import { OrbitControls } from '../../plugins/OrbitControls';
 // import OrbitControls from 'three-orbitcontrols';
 import {
-  getDevicePixelRatio, loadImage,
   createContext,
 } from '../../utils/viz';
 

@@ -5,6 +5,8 @@ import { Map, TileLayer } from 'maptalks';
 // @ts-ignore
 import RadarReader from '../../worker/radarReader.worker';
 
+import { getImageData, loadImage } from '../../utils/common';
+
 export interface PageProps {}
 
 export interface PageState {}
@@ -51,7 +53,13 @@ class CanvasImageReader extends React.Component<PageProps, PageState> {
     });
 
     // TODO: 路径必须是完整地址
-    this.initWorker('http://localhost:3003/data/201907021018_042.png');
+    // this.initWorker('201907021018_042', 'http://localhost:3003/data/201907021018_042.png');
+    loadImage('http://localhost:3003/data/201907021018_042.png')
+      .then((image: any) => {
+        getImageData(image).then((res: any) => {
+          this.initWorker('201907021018_042', res);
+        });
+      });
   }
 
   componentDidMount() {
@@ -60,12 +68,12 @@ class CanvasImageReader extends React.Component<PageProps, PageState> {
     }
   }
 
-  initWorker(url: string) {
+  initWorker(url: string, image: any) {
     this.worker = new RadarReader();
 
     if (this.worker) {
       this.worker.addEventListener('message', this.onMessage);
-      this.worker.postMessage([url, 'decodeData']);
+      this.worker.postMessage(['decodeData', url, image]);
     }
   }
 
@@ -76,7 +84,7 @@ class CanvasImageReader extends React.Component<PageProps, PageState> {
       if (type === 'decodeData') {
         this.map.on('mousemove', (event: any) => {
           // @ts-ignore
-          this.worker.postMessage(['queryData', 'http://localhost:3003/data/201907021018_042.png', {
+          this.worker.postMessage(['queryData', '201907021018_042', {
             lon: event.coordinate.x,
             lat: event.coordinate.y,
             maxResults: 1,

@@ -1,7 +1,7 @@
 import KDBush from 'kdbush';
 import geokdbush from 'geokdbush';
 import proj4 from 'proj4';
-import { loadImage } from '../utils/viz';
+import { getImageDataWithParams } from '../utils/common';
 
 const ctx: Worker = self as any;
 
@@ -24,7 +24,7 @@ const mercatorExtent: any[] = transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
 
 interface PointData {
   coordinates: number[];
-  itemData: Uint8ClampedArray[];
+  itemData: Uint8ClampedArray;
 }
 
 const indexData: {
@@ -33,39 +33,35 @@ const indexData: {
 
 ctx.addEventListener('message', async ({ data: payload }) => {
   if (payload[0] === 'decodeData' && payload[1]) {
-    const image = await loadImage(payload[1]);
+    const imageData = payload[2];
     // @ts-ignore
-    const { width, height } = image;
+    const { width, height } = imageData;
     const dx = (mercatorExtent[2] - mercatorExtent[0]) / width;
     const dy = (mercatorExtent[3] - mercatorExtent[1]) / height;
-    const canvas = new OffscreenCanvas(width, height);
-    const context = canvas.getContext('2d');
     const points: PointData[] = [];
-    console.log(dx, dy, canvas, context);
-    if (context) {
-      // @ts-ignore
-      context.drawImage(image, 0, 0, width, height);
-      // @ts-ignore
-      imageData = ctx.getImageData(0, 0, width, height);
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          // @ts-ignore
-          const itemData: any = context.getImageData(x, y, 1, 1);
-          const coordinates = toLonLat([
-            mercatorExtent[0] + dx * x,
-            mercatorExtent[1] + dy * y,
-          ]);
-          points.push({
-            coordinates,
-            itemData: itemData.data,
-          });
-        }
+    console.time('start');
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const itemData: Uint8ClampedArray = getImageDataWithParams(imageData, x, y, 1, 1);
+        const coordinates = toLonLat([
+          mercatorExtent[0] + dx * x,
+          mercatorExtent[1] + dy * y,
+        ]);
+        points.push({
+          coordinates,
+          itemData,
+        });
       }
-
-      const index = new KDBush(points, (p: PointData) => p.coordinates[0], (p: PointData) => p.coordinates[1]);
-      indexData[payload[1]] = index;
     }
 
+    console.timeEnd('start');
+
+    console.log(points);
+
+    const index = new KDBush(points, (p: PointData) => p.coordinates[0], (p: PointData) => p.coordinates[1]);
+    indexData[payload[1]] = index;
+
+    console.log(indexData);
     ctx.postMessage({
       type: payload[0],
       status: 'success',

@@ -5,6 +5,9 @@ import * as GeoTIFF from 'geotiff/dist/geotiff.bundle.min.js';
 // @ts-ignore
 import { contours } from 'd3-contour';
 // import { readRasterFromURL } from 'fast-geotiff';
+// @ts-ignore
+import * as getPixels from 'get-pixels';
+import isString from 'lodash/isString';
 
 const lastConfig = {
   '-50': [0, 0, 255],
@@ -137,7 +140,7 @@ export function mathCoordinates(data: any, size: {
       const rings = item[j];
       if (rings.length >= 4) {
         let k = 0;
-        const ringsNum: number[] = [];
+        const ringsNum: number[][] = [];
         // if (simple) { // 对坐标进行抽稀
         //   rings = simplify(rings, get(samplifyOpt, 'tolerance', 1), get(samplifyOpt, 'highQuality', false));
         // }
@@ -262,9 +265,93 @@ function isArrayHasData(obj: any) {
   return Array.isArray(obj) && obj.length > 0;
 }
 
+/**
+ * read image data
+ * @param url
+ */
+function readImage(url: string) {
+  return new Promise(((resolve, reject) => {
+    getPixels(url, (err: any, pixels: any) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(pixels);
+    });
+  }));
+}
+
+/**
+ * get image pixel data
+ * @param image
+ */
+function getImageData(image: HTMLImageElement | string) {
+  return new Promise(((resolve: any, reject: any) => {
+    if (isString(image)) {
+      readImage(image).then(resolve).catch(reject);
+    } else {
+      const { width, height } = image;
+      const canvas = new OffscreenCanvas(width, height);
+      const context = canvas.getContext('2d');
+      // @ts-ignore
+      context.drawImage(image, 0, 0, width, height);
+      // @ts-ignore
+      const imageData = context.getImageData(0, 0, width, height);
+      resolve(imageData);
+    }
+  }));
+}
+
+export function getImageDataWithParams(
+  imageData: ImageData, minX: number, minY: number, width: number, height: number,
+): Uint8ClampedArray {
+  const maxX = minX + width;
+  const maxY = minY + height;
+
+  const data = new Uint8ClampedArray(width * height * 4);
+  let dataIndex = 0;
+
+  for (let y = minY; y < maxY; y++) {
+    for (let x = minX; x < maxX; x++) {
+      const index = (y * maxX + x) * 4;
+
+      data[dataIndex++] = imageData.data[index];
+      data[dataIndex++] = imageData.data[index + 1];
+      data[dataIndex++] = imageData.data[index + 2];
+      data[dataIndex++] = Math.round(imageData.data[index + 3] * 255);
+    }
+  }
+
+  return data;
+}
+
+/**
+ * 获取设备缩放比
+ */
+export function getDevicePixelRatio() {
+  return window.devicePixelRatio || 1;
+}
+
+/**
+ * load image
+ * @param src
+ */
+export function loadImage(src: string) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      resolve(image);
+    };
+    image.onerror = reject;
+    image.src = src;
+  });
+}
+
 export {
   values,
   colors,
   replacer,
+  readImage,
+  getImageData,
   isArrayHasData,
 };
