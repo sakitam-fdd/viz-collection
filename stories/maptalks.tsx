@@ -8,7 +8,7 @@ import MapboxVector from './components/maptalks/MapboxVector';
 import MaptalksVectorTile from './components/maptalks/vectorTile';
 import CanvasImageReader from './components/image-reader/canvas-image-reader';
 // @ts-ignore
-import * as markdownNotes from './components/Button/index.md';
+import * as markdownNotes from './components/offscreen/index.md';
 // import { action } from '@storybook/addon-actions';
 
 storiesOf('maptalks', module)
