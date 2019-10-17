@@ -77,13 +77,6 @@ values = values.map((val: number | string) => {
   return Number(val);
 });
 
-export function transformExtent(extent: number[], source: string, destination: string): number[] {
-  return [
-    ...proj4(source, destination, [extent[0], extent[1]]),
-    ...proj4(source, destination, [extent[2], extent[3]]),
-  ];
-}
-
 export function getGridPoints(data: any) {
   const { width, height } = data;
   const size = {

@@ -1,24 +1,11 @@
 import KDBush from 'kdbush';
 import geokdbush from 'geokdbush';
-import proj4 from 'proj4';
+import { transformExtent, toLonLat } from '../utils/geom';
 import { getImageDataWithParams } from '../utils/common';
 
 const ctx: Worker = self as any;
 
 const extent = [66.68402763165123, 12.77002268658371, 143.5424729859214, 56.38334307775602];
-
-function transformExtent(extent: number[], source: string, destination: string) {
-  const a = proj4(source, destination, [extent[0], extent[1]]);
-  console.log(a);
-  return [
-    ...proj4(source, destination, [extent[0], extent[1]]),
-    ...proj4(source, destination, [extent[2], extent[3]]),
-  ];
-}
-
-function toLonLat(coordinates: number[]): number[] {
-  return proj4('EPSG:3857', 'EPSG:4326', coordinates);
-}
 
 const mercatorExtent: any[] = transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
 
@@ -40,8 +27,8 @@ ctx.addEventListener('message', async ({ data: payload }) => {
     const dy = (mercatorExtent[3] - mercatorExtent[1]) / height;
     const points: PointData[] = [];
     console.time('start');
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height / 10; y++) {
+      for (let x = 0; x < width / 10; x++) {
         const itemData: Uint8ClampedArray = getImageDataWithParams(imageData, x, y, 1, 1);
         const coordinates = toLonLat([
           mercatorExtent[0] + dx * x,
