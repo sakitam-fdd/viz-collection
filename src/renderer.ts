@@ -241,6 +241,7 @@ export class PlottyLayerCanvasRenderer extends ImageLayerCanvasRenderer {
     this._loadingResource = false;
     if (this.layer) {
       const first = payload.data[0];
+      console.log(first);
 
       // addColorScale("scale", colors, values);
 
