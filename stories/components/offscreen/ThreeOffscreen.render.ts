@@ -12,13 +12,19 @@ function random() {
 function animate() {
   group.rotation.y = - Date.now() / 4000;
   renderer.render(scene, camera);
-  if (self.requestAnimationFrame) {
-    self.requestAnimationFrame(animate);
+  if (requestAnimationFrame) {
+    requestAnimationFrame(animate);
   }
 }
 
-export function initThree(canvas: HTMLCanvasElement, width: number, height: number, pixelRatio: number, path: string) {
-  console.log(canvas);
+export function initThree(
+  canvas: HTMLCanvasElement,
+  width: number,
+  height: number,
+  pixelRatio: number,
+  texturePath: string,
+  basePath?: string,
+) {
   camera = new THREE.PerspectiveCamera(40, width / height, 1, 1000);
   camera.position.z = 200;
 
@@ -30,9 +36,9 @@ export function initThree(canvas: HTMLCanvasElement, width: number, height: numb
   scene.add(group);
 
   // we don't use ImageLoader since it has a DOM dependency (HTML5 image element)
-  const loader = new THREE.ImageBitmapLoader().setPath(path);
+  const loader = new THREE.ImageBitmapLoader().setPath(basePath || '');
   loader.setOptions({ imageOrientation: 'flipY' });
-  loader.load('textures/matcap-porcelain-white.jpg', (imageBitmap: any) => {
+  loader.load(texturePath, (imageBitmap: any) => {
 
     const texture = new THREE.CanvasTexture(imageBitmap);
 
@@ -61,9 +67,13 @@ export function initThree(canvas: HTMLCanvasElement, width: number, height: numb
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(width, height, false);
     animate();
+  }, (progress: ProgressEvent) => {
+    console.log(progress);
+  }, (error: ErrorEvent) => {
+    console.log(error);
   });
 }
 
-export function resizeRenderer(w: number, h: number) {
-  renderer && renderer.setSize(w, h);
+export function resizeRenderer(w: number, h: number, updateStyle?: boolean) {
+  renderer && renderer.setSize(w, h, updateStyle);
 }

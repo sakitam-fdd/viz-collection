@@ -23,11 +23,6 @@ export interface PageProps {}
 
 export interface PageState {}
 
-const tilePixels = new Projection({
-  code: 'TILE_PIXELS',
-  units: 'tile-pixels',
-});
-
 class Openlayers extends React.Component<PageProps, PageState> {
   private container: React.RefObject<HTMLElement>;
   private style: { width: string; height: string };
@@ -155,20 +150,21 @@ class Openlayers extends React.Component<PageProps, PageState> {
       });
       const layer = new VectorTileLayer({
         source: new VectorTileSource({
-          format: new GeoJSON(),
-          tileLoadFunction: (tile: any) => {
-            const format = tile.getFormat();
-            const tileCoord = tile.getTileCoord();
+          format: new GeoJSON({
+            // Data returned from geojson-vt is in tile pixel units
+            dataProjection: new Projection({
+              code: 'TILE_PIXELS',
+              units: 'tile-pixels',
+              extent: [0, 0, 4096, 4096],
+            }),
+          }),
+          tileLoadFunction: (tileCoord: any[]) => {
             const tileData = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
             const featureString = JSON.stringify({
               type: 'FeatureCollection',
               features: tileData ? tileData.features : [],
             }, replacer);
-            const features = format.readFeatures(featureString);
-            tile.setLoader(() => {
-              tile.setFeatures(features);
-              tile.setProjection(tilePixels);
-            });
+            return `data:application/json;charset=UTF-8,${featureString}`;
           },
           url: 'data:', // arbitrary url, we don't use it in the tileLoadFunction
           wrapX: false,
@@ -197,21 +193,22 @@ class Openlayers extends React.Component<PageProps, PageState> {
       this.initialize(payload.data);
     } else if (type === 'create-vt') {
       const layer = new VectorTileLayer({
-        format: new GeoJSON(),
+        format: new GeoJSON({
+          // Data returned from geojson-vt is in tile pixel units
+          dataProjection: new Projection({
+            code: 'TILE_PIXELS',
+            units: 'tile-pixels',
+            extent: [0, 0, 4096, 4096],
+          }),
+        }),
         source: new VectorTileSource({
-          tileLoadFunction: (tile: any) => {
-            const format = tile.getFormat();
-            const tileCoord = tile.getTileCoord();
-            const data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
+          tileLoadFunction: (tileCoord: any[]) => {
+            const tileData = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
             const featureString = JSON.stringify({
               type: 'FeatureCollection',
-              features: data ? data.features : [],
+              features: tileData ? tileData.features : [],
             }, replacer);
-            const features = format.readFeatures(featureString);
-            tile.setLoader(() => {
-              tile.setFeatures(features);
-              tile.setProjection(tilePixels);
-            });
+            return `data:application/json;charset=UTF-8,${featureString}`;
           },
           url: 'data:', // arbitrary url, we don't use it in the tileLoadFunction
           wrapX: false,
@@ -239,7 +236,6 @@ class Openlayers extends React.Component<PageProps, PageState> {
       const features = format.readFeatures(data);
       tile.setLoader(() => {
         tile.setFeatures(features);
-        tile.setProjection(tilePixels);
       });
     }
   }
@@ -278,7 +274,6 @@ class Openlayers extends React.Component<PageProps, PageState> {
                   console.log(tile, features);
                   tile.setLoader(() => {
                     tile.setFeatures(features);
-                    tile.setProjection(tilePixels);
                   });
                 });
               } else {
