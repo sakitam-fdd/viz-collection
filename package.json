@@ -23,7 +23,7 @@
   "dependencies": {
     "kdbush": "^3.0.0",
     "geokdbush": "^1.1.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "plotty": "^0.4.1",
     "get-pixels": "^3.3.2",
     "lodash-es": "^4.17.15",
