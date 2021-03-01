@@ -9390,10 +9390,10 @@ three-orbitcontrols@2.108.1:
   version "2.108.1"
   resolved "https://registry.npm.taobao.org/three-orbitcontrols/download/three-orbitcontrols-2.108.1.tgz#3b7877390ee5cde151805646064de3c0be313474"
 
-three@*, three@^0.109.0:
-  version "0.109.0"
-  resolved "https://registry.npm.taobao.org/three/download/three-0.109.0.tgz#611c9ef860d10bd107695cead6c6abcd2422e5fd"
-  integrity sha1-YRye+GDRC9EHaVzq1sarzSQi5f0=
+three@*, three@^0.125.0:
+  version "0.125.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.125.0.tgz#19e922b9dc51ad0b706893aeee888de68e99850a"
+  integrity sha512-qL36qUGsPQ/Ofo/RZdXwHwM7A8wzUSAIyawtjIebJSPvounUQeneSqxI0aBY2iwKpseGy+RUtj3C5f/z4poyXw==
 
 throat@^4.0.0:
   version "4.1.0"
